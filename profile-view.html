@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner - Profile View</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <button class="icon-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 id="profileName">Profile</h1>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="profile-header">
+                <div class="profile-photo" style="width: 150px; height: 150px; margin: 0 auto 20px;">
+                    <img id="profileImg" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid white;">
+                </div>
+                <h2 id="displayTitle"></h2>
+            </div>
+            
+            <div class="section profile-cv-section" style="border-radius: 20px; padding: 20px; margin-top: -20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: var(--white);">
+                <h3 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-file-alt"></i> Bio / CV</h3>
+                <div id="cvContent" style="line-height: 1.6; color: var(--text-main);">
+                    <p><strong>About:</strong> <span id="displayBio"></span></p>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                    <p><i class="fas fa-graduation-cap"></i> <strong>Education:</strong> <span id="displayEducation">Not specified</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> <span id="displayLocation">Bangladesh</span></p>
+                    <p><i class="fas fa-heart"></i> <strong>Status:</strong> Single</p>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top: 30px; display: flex; gap: 10px;">
+                <button class="btn-primary" id="msgBtn" onclick="checkPremiumAndMessage()" style="flex: 2;">
+                    <i class="fas fa-comment"></i> Send Message
+                </button>
+                <button class="btn-outline" id="likeBtn" onclick="handleProfileLike()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-heart"></i> Like
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Subscription Popup -->
+    <div class="modal-overlay hidden" id="subscriptionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Upgrade to Premium</h3>
+                <button class="modal-close" onclick="closeSubscriptionModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="premium-animation" style="margin-bottom: 20px;">
+                    <i class="fas fa-crown" style="font-size: 50px; color: #f59e0b;"></i>
+                </div>
+                <h4 id="modalSubtitle">Unlock Messaging!</h4>
+                <p id="modalText">Subscribe to Premium to start chatting with amazing people.</p>
+                <button class="btn-primary" onclick="window.location.href='subscription.html'" style="margin-top: 20px;">
+                    View Plans
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let currentProfileName = '';
+
+        window.onload = async function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            const params = new URLSearchParams(window.location.search);
+            const profileId = params.get('id');
+            const lang = localStorage.getItem('language') || 'bn';
+            
+            if (lang === 'bn') {
+                document.getElementById('modalTitle').textContent = 'প্রিমিয়াম সাবস্ক্রিপশন';
+                document.getElementById('modalSubtitle').textContent = 'মেসেজ ফিচার আনলক করুন!';
+                document.getElementById('modalText').textContent = 'সরাসরি মেসেজ পাঠাতে প্রিমিয়াম প্ল্যান সাবস্ক্রাইব করুন।';
+                const planBtn = document.querySelector('.btn-primary[onclick*="subscription.html"]');
+                if (planBtn) planBtn.textContent = 'প্ল্যান দেখুন';
+                const msgBtn = document.getElementById('msgBtn');
+                if (msgBtn) msgBtn.innerHTML = '<i class="fas fa-comment"></i> মেসেজ পাঠান';
+                const likeBtn = document.getElementById('likeBtn');
+                if (likeBtn) likeBtn.innerHTML = '<i class="fas fa-heart"></i> লাইক';
+            }
+
+            try {
+                const response = await fetch(`get_user.php?id=${profileId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const p = data.user;
+                    currentProfileName = p.name;
+                    const displayAge = lang === 'bn' ? p.age.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : p.age;
+                    document.getElementById('profileName').textContent = p.name;
+                    document.getElementById('displayTitle').textContent = `${p.name}, ${displayAge}`;
+                    document.getElementById('displayBio').textContent = p.bio || (lang === 'bn' ? 'উল্লেখ নেই' : 'Not specified');
+                    document.getElementById('displayEducation').textContent = p.education || (lang === 'bn' ? 'উল্লেখ নেই' : 'Not specified');
+                    document.getElementById('profileImg').src = p.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}`;
+                    
+                    if (p.location) {
+                        const locSpan = document.getElementById('displayLocation');
+                        if (locSpan) locSpan.textContent = p.location;
+                    }
+
+                    // Check if already liked
+                    const likedProfiles = JSON.parse(localStorage.getItem('likedProfiles') || '[]');
+                    if (likedProfiles.includes(p.name)) {
+                        updateLikeButtonStyle(true);
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading profile:', e);
+            }
+        };
+
+        function updateLikeButtonStyle(isLiked) {
+            const likeBtn = document.getElementById('likeBtn');
+            if (!likeBtn) return;
+            const lang = localStorage.getItem('language') || 'bn';
+            
+            if (isLiked) {
+                likeBtn.innerHTML = `<i class="fas fa-heart"></i> ${lang === 'bn' ? 'পছন্দ করেছেন' : 'Liked'}`;
+                likeBtn.classList.add('btn-primary');
+                likeBtn.classList.remove('btn-outline');
+            } else {
+                likeBtn.innerHTML = `<i class="fas fa-heart"></i> ${lang === 'bn' ? 'লাইক' : 'Like'}`;
+                likeBtn.classList.remove('btn-primary');
+                likeBtn.classList.add('btn-outline');
+            }
+        }
+
+        function handleProfileLike() {
+            if (currentProfileName && typeof window.handleLike === 'function') {
+                window.handleLike(currentProfileName);
+                const likedProfiles = JSON.parse(localStorage.getItem('likedProfiles') || '[]');
+                if (likedProfiles.includes(currentProfileName)) {
+                    updateLikeButtonStyle(true);
+                }
+            }
+        }
+
+        function checkPremiumAndMessage() {
+            const plan = localStorage.getItem('selectedPlan') || 'free';
+            if (plan === 'free') {
+                const modal = document.getElementById('subscriptionModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.style.display = 'flex';
+                }
+            } else {
+                alert('Message feature coming soon for Premium users!');
+            }
+        }
+
+        function closeSubscriptionModal() {
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

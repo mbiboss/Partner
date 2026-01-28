@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner - Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <button class="icon-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1>Profile</h1>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="profile-header">
+                <div class="profile-photo-container">
+                    <div class="profile-photo" id="profilePhoto">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=150" 
+                             alt="Profile" id="profileImage">
+                        <button class="photo-edit-btn" onclick="document.getElementById('photoInput').click()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" class="hidden" 
+                           onchange="previewProfilePhoto(event)">
+                </div>
+                
+                <h2 id="userName">Loading...</h2>
+                <p id="userEmail">Loading...</p>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <strong id="matchesCount">0</strong>
+                        <span>Matches</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="likesCount">0</strong>
+                        <span>Likes</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="visitsCount">0</strong>
+                        <span>Visits</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">Account</h3>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>
+                                <strong>Mobile Number</strong>
+                                <p id="userMobile">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-venus-mars"></i>
+                            <div>
+                                <strong>Gender</strong>
+                                <p id="userGender">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-birthday-cake"></i>
+                            <div>
+                                <strong>Age</strong>
+                                <p id="userAge">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-crown"></i>
+                            <div>
+                                <strong>Subscription</strong>
+                                <p id="subscriptionStatus">Free Plan</p>
+                            </div>
+                        </div>
+                        <button class="btn-small" onclick="goToSubscription()">
+                            Upgrade
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title" id="profileDetailsTitle">প্রোফাইল বিবরণ</h3>
+                <div class="settings-list">
+                    <div class="setting-item clickable" onclick="openEditModal('about')">
+                        <div class="setting-info">
+                            <i class="fas fa-user-circle"></i>
+                            <div>
+                                <strong id="aboutLabel">আমার সম্পর্কে</strong>
+                                <p id="userAbout">নিজের সম্পর্কে লিখুন</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="setting-item clickable" onclick="openEditModal('education')">
+                        <div class="setting-info">
+                            <i class="fas fa-graduation-cap"></i>
+                            <div>
+                                <strong id="educationLabel">শিক্ষাগত যোগ্যতা</strong>
+                                <p id="userEducation">শিক্ষাগত যোগ্যতা যোগ করুন</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="setting-item clickable" onclick="openEditModal('location')">
+                        <div class="setting-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong id="locationLabel">ঠিকানা</strong>
+                                <p id="userLocation">আপনার ঠিকানা যোগ করুন</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="setting-item clickable" onclick="openEditModal('status')">
+                        <div class="setting-info">
+                            <i class="fas fa-heart"></i>
+                            <div>
+                                <strong id="statusLabel">সম্পর্কের অবস্থা</strong>
+                                <p id="userStatus">আপনার অবস্থা যোগ করুন</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">Preferences</h3>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <strong>Language</strong>
+                                <p>Select your language</p>
+                            </div>
+                        </div>
+                        <select class="select-small" id="languageSelect" onchange="changeLanguage()">
+                            <option value="en">English</option>
+                            <option value="bn">বাংলা</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-palette"></i>
+                            <div>
+                                <strong>Theme</strong>
+                                <p>Light or Dark mode</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <strong>Notifications</strong>
+                                <p>Manage notifications</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="notificationsToggle" checked onchange="toggleNotifications()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">Support</h3>
+                <div class="settings-list">
+                    <div class="setting-item clickable" onclick="showHelp()">
+                        <div class="setting-info">
+                            <i class="fas fa-question-circle"></i>
+                            <div>
+                                <strong>Help & Support</strong>
+                                <p>Get help with the app</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="setting-item clickable" onclick="showPrivacy()">
+                        <div class="setting-info">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <strong>Privacy & Safety</strong>
+                                <p>Your data and security</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="setting-item clickable" onclick="showAbout()">
+                        <div class="setting-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>About Partner</strong>
+                                <p>Version 1.0.0</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <nav class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="handleAddClick(); return false;">
+                <i class="fas fa-plus"></i>
+                <span>Add</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+    
+    <div id="chatModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000000; display: none; align-items: center; justify-content: center;" onclick="if(event.target === this) closeChat()">
+        <div class="modal-content chat-modal" style="background: white; width: 90%; max-width: 400px; border-radius: 20px; overflow: hidden; position: relative;" onclick="event.stopPropagation()">
+            <div class="modal-header" style="padding: 15px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0;"><i class="fas fa-headset"></i> Support Chat</h3>
+                <button class="close-btn" onclick="closeChat(); event.stopPropagation();" style="background:transparent; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="chat-body" id="chatBody" style="height: 300px; overflow-y: auto; padding: 15px;">
+                <div class="message system">
+                    <p>Welcome! How can we help you today?</p>
+                </div>
+            </div>
+            <div class="chat-footer" style="padding: 15px; display: flex; gap: 10px; border-top: 1px solid #eee;">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()" style="flex:1; padding: 10px; border: 1px solid #ddd; border-radius: 20px;">
+                <button onclick="sendMessage()" style="background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy & Safety Modal -->
+    <div id="privacyModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000000; display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; width: 90%; max-width: 400px; border-radius: 24px; overflow: hidden; position: relative;">
+            <div class="modal-header" style="padding: 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0;"><i class="fas fa-shield-alt"></i> Privacy & Safety</h3>
+                <button class="close-btn" onclick="closeModal('privacyModal')" style="background:transparent; border:none; color:white; font-size:24px;">&times;</button>
+            </div>
+            <div class="modal-body scrollable" style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                <div class="content-section" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-user-shield"></i> আপনার তথ্য আমাদের কাছে নিরাপদ</h4>
+                    <p>আপনার ব্যক্তিগত তথ্য (মোবাইল নম্বর, ইমেইল) এবং ছবিগুলো পার্টনার অ্যাপে এনক্রিপ্টেড অবস্থায় থাকে। আমরা কোনো থার্ড পার্টি অ্যাপের সাথে আপনার তথ্য শেয়ার করি না।</p>
+                </div>
+                <div class="content-section" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-lock"></i> পাসওয়ার্ড সুরক্ষা</h4>
+                    <p>আপনার পাসওয়ার্ডগুলো শক্তিশালী হ্যাশ অ্যালগরিদম দ্বারা সুরক্ষিত। তবুও নিরাপত্তার খাতিরে আপনার পাসওয়ার্ড কারো সাথে শেয়ার করবেন না।</p>
+                </div>
+                <div class="content-section">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-ban"></i> রিপোর্ট ও ব্লক</h4>
+                    <p>যদি কোনো ইউজার আপনাকে ডিস্টার্ব করে বা ভুয়া প্রোফাইল মনে হয়, তবে সাথে সাথে রিপোর্ট বা ব্লক করতে পারেন। আমাদের টিম সেটি ২৪ ঘন্টার মধ্যে চেক করবে।</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Partner Modal -->
+    <div id="aboutModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000000; display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; width: 90%; max-width: 400px; border-radius: 24px; overflow: hidden; position: relative;">
+            <div class="modal-header" style="padding: 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0;"><i class="fas fa-info-circle"></i> About Partner</h3>
+                <button class="close-btn" onclick="closeModal('aboutModal')" style="background:transparent; border:none; color:white; font-size:24px;">&times;</button>
+            </div>
+            <div class="modal-body scrollable" style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                <div class="about-logo" style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-heart" style="font-size: 48px; color: var(--primary);"></i>
+                    <h2 style="margin: 10px 0 5px;">Partner</h2>
+                    <span style="color: #666;">Version 1.2.0</span>
+                </div>
+                <p>পার্টনার হলো বাংলাদেশের প্রথম আধুনিক ডেটিং এবং কানেকশন অ্যাপ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জীবনসঙ্গী খুঁজে পেতে সাহায্য করা।</p>
+                <div class="info-list" style="margin: 20px 0;">
+                    <div class="info-item" style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #10b981;"></i> ১০০% ভেরিফাইড প্রোফাইল</div>
+                    <div class="info-item" style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #10b981;"></i> নিরাপদ চ্যাটিং সিস্টেম</div>
+                    <div class="info-item"><i class="fas fa-check-circle" style="color: #10b981;"></i> আধুনিক ম্যাচিং অ্যালগরিদম</div>
+                </div>
+                <p class="copyright" style="text-align: center; color: #999; font-size: 12px;">© 2026 Partner App. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Popup (Corrected ID to avoid duplication) -->
+    <div id="subscriptionModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 999999; display: none; align-items: center; justify-content: center;">
+        <div class="modal" style="background: white; width: 90%; max-width: 380px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+            <div class="modal-header" style="padding: 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0;">Upgrade to Premium</h3>
+                <button onclick="closeSubscriptionModal()" style="background:transparent; border:none; color:white; font-size:28px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 30px 24px; text-align: center;">
+                <div class="premium-animation" style="font-size: 64px; color: #FFD700; margin-bottom: 20px;">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h4>Unlock Amazing Features!</h4>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Subscribe to Premium to connect with everyone.</p>
+                <ul class="premium-features" style="text-align: left; list-style: none; padding: 0; margin-bottom: 25px;">
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> See who likes you</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> Unlimited likes</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> Advanced filters</li>
+                </ul>
+                <button class="btn-primary" onclick="goToSubscription()" style="margin-bottom: 12px; width: 100%;">
+                    View Plans
+                </button>
+                <button class="btn-outline" onclick="closeSubscriptionModal()" style="width: 100%;">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000000; display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; width: 90%; max-width: 400px; border-radius: 24px; overflow: hidden; position: relative;">
+            <div class="modal-header" style="padding: 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="editModalTitle" style="margin:0;"><i class="fas fa-edit"></i> Edit Profile</h3>
+                <button class="close-btn" onclick="closeEditModal()" style="background:transparent; border:none; color:white; font-size:24px;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <input type="hidden" id="editField">
+                <div id="editInputContainer">
+                    <label id="editLabel" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;"></label>
+                    <textarea id="editInput" rows="3" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 14px; resize: vertical;"></textarea>
+                </div>
+                <div id="statusSelectContainer" style="display: none;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">অবস্থা নির্বাচন করুন</label>
+                    <select id="statusSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 14px;">
+                        <option value="অবিবাহিত">অবিবাহিত</option>
+                        <option value="সম্পর্কে আছি">সম্পর্কে আছি</option>
+                        <option value="এনগেজড">এনগেজড</option>
+                        <option value="বিবাহিত">বিবাহিত</option>
+                        <option value="পার্টনার খুঁজছি">পার্টনার খুঁজছি</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="saveProfileField()" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-save"></i> সেভ করুন
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let currentEditField = '';
+        
+        function openEditModal(field) {
+            currentEditField = field;
+            const modal = document.getElementById('editProfileModal');
+            const editInput = document.getElementById('editInput');
+            const editLabel = document.getElementById('editLabel');
+            const editModalTitle = document.getElementById('editModalTitle');
+            const editInputContainer = document.getElementById('editInputContainer');
+            const statusSelectContainer = document.getElementById('statusSelectContainer');
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const lang = localStorage.getItem('language') || 'bn';
+            
+            const labels = {
+                about: lang === 'bn' ? 'আপনার সম্পর্কে' : 'About Me',
+                education: lang === 'bn' ? 'শিক্ষাগত যোগ্যতা' : 'Education',
+                location: lang === 'bn' ? 'ঠিকানা' : 'Location',
+                status: lang === 'bn' ? 'সম্পর্কের অবস্থা' : 'Relationship Status'
+            };
+            
+            editModalTitle.innerHTML = '<i class="fas fa-edit"></i> ' + labels[field];
+            
+            if (field === 'status') {
+                editInputContainer.style.display = 'none';
+                statusSelectContainer.style.display = 'block';
+                document.getElementById('statusSelect').value = user.status || 'Single';
+            } else {
+                editInputContainer.style.display = 'block';
+                statusSelectContainer.style.display = 'none';
+                editLabel.textContent = labels[field];
+                editInput.value = user[field] || '';
+                editInput.placeholder = lang === 'bn' ? 'এখানে লিখুন...' : 'Enter here...';
+            }
+            
+            modal.classList.remove('hidden');
+            modal.style.setProperty('display', 'flex', 'important');
+            applyBlur();
+        }
+        
+        function closeEditModal() {
+            const modal = document.getElementById('editProfileModal');
+            modal.classList.add('hidden');
+            modal.style.setProperty('display', 'none', 'important');
+            removeBlur();
+        }
+        
+        async function saveProfileField() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            let value;
+            
+            if (currentEditField === 'status') {
+                value = document.getElementById('statusSelect').value;
+            } else {
+                value = document.getElementById('editInput').value.trim();
+            }
+            
+            if (!value) {
+                alert('Please enter a value');
+                return;
+            }
+            
+            user[currentEditField] = value;
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            try {
+                const response = await fetch('update_profile.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: user.id, [currentEditField]: value })
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    console.warn('Server save failed:', result.message);
+                }
+            } catch (e) {
+                console.error('Error saving to server:', e);
+            }
+            
+            updateProfileDisplay();
+            closeEditModal();
+            
+            const lang = localStorage.getItem('language') || 'bn';
+            alert(lang === 'bn' ? 'সফলভাবে আপডেট হয়েছে!' : 'Updated successfully!');
+        }
+        
+        function updateProfileDisplay() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const lang = localStorage.getItem('language') || 'bn';
+            
+            const aboutEl = document.getElementById('userAbout');
+            const educationEl = document.getElementById('userEducation');
+            const locationEl = document.getElementById('userLocation');
+            const statusEl = document.getElementById('userStatus');
+            
+            if (aboutEl) aboutEl.textContent = user.about || 'নিজের সম্পর্কে লিখুন';
+            if (educationEl) educationEl.textContent = user.education || 'শিক্ষাগত যোগ্যতা যোগ করুন';
+            if (locationEl) locationEl.textContent = user.location || 'আপনার ঠিকানা যোগ করুন';
+            if (statusEl) statusEl.textContent = user.status || 'আপনার অবস্থা যোগ করুন';
+            
+            // Update labels based on language
+            const profileDetailsTitle = document.getElementById('profileDetailsTitle');
+            const aboutLabel = document.getElementById('aboutLabel');
+            const educationLabel = document.getElementById('educationLabel');
+            const locationLabel = document.getElementById('locationLabel');
+            const statusLabel = document.getElementById('statusLabel');
+            
+            if (lang === 'en') {
+                if (profileDetailsTitle) profileDetailsTitle.textContent = 'Profile Details';
+                if (aboutLabel) aboutLabel.textContent = 'About Me';
+                if (educationLabel) educationLabel.textContent = 'Education';
+                if (locationLabel) locationLabel.textContent = 'Location';
+                if (statusLabel) statusLabel.textContent = 'Relationship Status';
+                if (aboutEl && !user.about) aboutEl.textContent = 'Add a description about yourself';
+                if (educationEl && !user.education) educationEl.textContent = 'Add your education';
+                if (locationEl && !user.location) locationEl.textContent = 'Add your location';
+                if (statusEl && !user.status) statusEl.textContent = 'Add your status';
+            }
+        }
+
+        function handleAddClick() {
+            console.log('Add button clicked');
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.setProperty('display', 'flex', 'important');
+                
+                // Add blur effect ONLY to main content, not the overlay or modal
+                const main = document.querySelector('.app-main');
+                const header = document.querySelector('.app-header');
+                const nav = document.querySelector('.bottom-nav');
+                
+                [main, header, nav].forEach(el => {
+                    if (el) {
+                        el.style.filter = 'blur(10px)';
+                        el.style.transition = 'filter 0.4s ease';
+                    }
+                });
+                
+                // Ensure modal is on top
+                modal.style.zIndex = '1000000';
+            }
+        }
+
+        function closeSubscriptionModal() {
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.setProperty('display', 'none', 'important');
+                
+                const elements = document.querySelectorAll('.app-main, .app-header, .bottom-nav');
+                elements.forEach(el => {
+                    if (el) el.style.filter = 'none';
+                });
+            }
+        }
+        function showHelp() {
+            const modal = document.getElementById('chatModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.setProperty('display', 'flex', 'important');
+                applyBlur();
+            }
+        }
+
+        function showPrivacy() {
+            const modal = document.getElementById('privacyModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.setProperty('display', 'flex', 'important');
+                applyBlur();
+            }
+        }
+
+        function showAbout() {
+            const modal = document.getElementById('aboutModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.setProperty('display', 'flex', 'important');
+                applyBlur();
+            }
+        }
+
+        function applyBlur() {
+            const main = document.querySelector('.app-main');
+            const header = document.querySelector('.app-header');
+            const nav = document.querySelector('.bottom-nav');
+            [main, header, nav].forEach(el => {
+                if (el) {
+                    el.style.filter = 'blur(10px)';
+                    el.style.transition = 'filter 0.4s ease';
+                }
+            });
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.setProperty('display', 'none', 'important');
+                removeBlur();
+            }
+        }
+
+        function closeChat() {
+            const modal = document.getElementById('chatModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.setProperty('display', 'none', 'important');
+                removeBlur();
+            }
+        }
+
+        function removeBlur() {
+            const elements = document.querySelectorAll('.app-main, .app-header, .bottom-nav');
+            elements.forEach(el => {
+                if (el) el.style.filter = 'none';
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            appendMessage('user', message);
+            input.value = '';
+
+            // Auto reply logic
+            setTimeout(() => {
+                let reply = "";
+                const lowerMsg = message.toLowerCase();
+                const lang = localStorage.getItem('language') || 'bn';
+
+                if (lowerMsg.includes('hello') || lowerMsg.includes('hi') || lowerMsg.includes('সালাম')) {
+                    reply = lang === 'bn' ? "হ্যালো! পার্টনার অ্যাপে আপনাকে স্বাগতম। আমি আপনাকে কীভাবে সাহায্য করতে পারি?" : "Hello! Welcome to Partner App. How can I help you?";
+                } else if (lowerMsg.includes('premium') || lowerMsg.includes('পেমেন্ট') || lowerMsg.includes('টাকা')) {
+                    reply = lang === 'bn' ? "প্রিমিয়াম মেম্বারশিপ নিতে সাবস্ক্রিপশন পেজে যান। আমরা বিকাশ ও নগদে পেমেন্ট গ্রহণ করি।" : "To get premium membership, please visit the subscription page. We accept bKash and Nagad.";
+                } else if (lowerMsg.includes('profile') || lowerMsg.includes('ছবি')) {
+                    reply = lang === 'bn' ? "আপনি প্রোফাইল পেজ থেকে আপনার তথ্য এবং ছবি পরিবর্তন করতে পারেন।" : "You can change your info and photo from the profile page.";
+                } else {
+                    reply = lang === 'bn' ? "আপনার বার্তার জন্য ধন্যবাদ। আমাদের একজন প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।" : "Thank you for your message. One of our representatives will contact you shortly.";
+                }
+                appendMessage('bot', reply);
+            }, 1000);
+        }
+
+        function appendMessage(sender, text) {
+            const chatBody = document.getElementById('chatBody');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            msgDiv.innerHTML = `<p>${text}</p>`;
+            chatBody.appendChild(msgDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Load user data
+        window.onload = async function() {
+            // First try to load from backend if on InfinityFree/Remote
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const lang = localStorage.getItem('language') || 'bn';
+
+            if (user.id) {
+                try {
+                    const response = await fetch(`get_user.php?id=${user.id}`);
+                    const remoteData = await response.json();
+                    if (remoteData.success) {
+                        localStorage.setItem('user', JSON.stringify(remoteData.user));
+                        Object.assign(user, remoteData.user);
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch remote profile data", e);
+                }
+            }
+            
+            // Try to get permanent picture from IndexedDB
+            const permanentPic = await getProfilePicPermanent();
+            if (permanentPic) {
+                user.profilePic = permanentPic;
+            }
+            
+            // Log for debugging
+            console.log("Current User in LocalStorage:", user);
+            
+            // Set user info
+            const name = user.name || (lang === 'bn' ? 'ব্যবহারকারী' : 'User');
+            const email = user.email || (lang === 'bn' ? 'ইমেইল পাওয়া যায়নি' : 'Email not found');
+            const mobile = user.mobile || (lang === 'bn' ? 'মোবাইল পাওয়া যায়নি' : 'Mobile not found');
+            const age = user.age || (lang === 'bn' ? '...' : '25');
+            
+            // Force update elements
+            const userNameEl = document.getElementById('userName');
+            const userEmailEl = document.getElementById('userEmail');
+            const userMobileEl = document.getElementById('userMobile');
+            const userAgeEl = document.getElementById('userAge');
+            const userGenderEl = document.getElementById('userGender');
+
+            if (userNameEl) userNameEl.textContent = name;
+            if (userEmailEl) userEmailEl.textContent = email;
+            if (userMobileEl) userMobileEl.textContent = mobile;
+            if (userAgeEl) userAgeEl.textContent = age + (lang === 'bn' ? ' বছর' : ' years');
+            
+            if (userGenderEl) {
+                const genderMap = {
+                    'male': lang === 'bn' ? 'পুরুষ' : 'Male',
+                    'female': lang === 'bn' ? 'মহিলা' : 'Female',
+                    'other': lang === 'bn' ? 'অন্যান্য' : 'Other'
+                };
+                userGenderEl.textContent = genderMap[user.gender] || user.gender || (lang === 'bn' ? 'অজানা' : 'Unknown');
+            }
+            
+            // Set image
+            const profileImg = document.getElementById('profileImage');
+            profileImg.alt = name;
+            if (user.profilePic) {
+                profileImg.src = user.profilePic;
+            } else {
+                profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&size=150`;
+            }
+            
+            // Load subscription status
+            const plan = localStorage.getItem('selectedPlan') || 'free';
+            const planDisplay = {
+                'free': lang === 'bn' ? 'ফ্রি প্ল্যান' : 'Free Plan',
+                'premium': lang === 'bn' ? 'প্রিমিয়াম প্ল্যান' : 'Premium Plan',
+                'vip': lang === 'bn' ? 'ভিআইপি প্ল্যান' : 'VIP Plan'
+            };
+            document.getElementById('subscriptionStatus').textContent = planDisplay[plan] || plan;
+            
+            // Update profile details (About, Education, Location, Status)
+            updateProfileDisplay();
+            
+            // Reset stats to 0 by default
+            document.getElementById('matchesCount').textContent = '0';
+            document.getElementById('likesCount').textContent = '0';
+            document.getElementById('visitsCount').textContent = '0';
+            
+            // Load theme preference
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) themeToggle.checked = darkMode;
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Load language preference
+            const langSelect = document.getElementById('languageSelect');
+            if (langSelect) langSelect.value = lang;
+            updateUILanguage(lang);
+        };
+
+        function updateUILanguage(lang) {
+            const translations = {
+                'en': {
+                    'profile': 'Profile',
+                    'matches': 'Matches',
+                    'likes': 'Likes',
+                    'visits': 'Visits',
+                    'account': 'Account',
+                    'mobile': 'Mobile Number',
+                    'gender': 'Gender',
+                    'age': 'Age',
+                    'subscription': 'Subscription',
+                    'upgrade': 'Upgrade',
+                    'preferences': 'Preferences',
+                    'language': 'Language',
+                    'lang_desc': 'Select your language',
+                    'theme': 'Theme',
+                    'theme_desc': 'Light or Dark mode',
+                    'notifications': 'Notifications',
+                    'notif_desc': 'Manage notifications',
+                    'support': 'Support',
+                    'help': 'Help & Support',
+                    'help_desc': 'Get help with the app',
+                    'privacy': 'Privacy & Safety',
+                    'privacy_desc': 'Your data and security',
+                    'about': 'About Partner',
+                    'home': 'Home'
+                },
+                'bn': {
+                    'profile': 'প্রোফাইল',
+                    'matches': 'ম্যাচ',
+                    'likes': 'লাইক',
+                    'visits': 'ভিজিট',
+                    'account': 'অ্যাকাউন্ট',
+                    'mobile': 'মোবাইল নম্বর',
+                    'gender': 'লিঙ্গ',
+                    'age': 'বয়স',
+                    'subscription': 'সাবস্ক্রিপশন',
+                    'upgrade': 'আপগ্রেড',
+                    'preferences': 'পছন্দসমূহ',
+                    'language': 'ভাষা',
+                    'lang_desc': 'ভাষা নির্বাচন করুন',
+                    'theme': 'থিম',
+                    'theme_desc': 'লাইট বা ডার্ক মোড',
+                    'notifications': 'নোটিফিকেশন',
+                    'notif_desc': 'নোটিফিকেশন ম্যানেজ করুন',
+                    'support': 'সাপোর্ট',
+                    'help': 'সাহায্য ও সাপোর্ট',
+                    'help_desc': 'অ্যাপ নিয়ে সাহায্য নিন',
+                    'privacy': 'প্রাইভেসি ও নিরাপত্তা',
+                    'privacy_desc': 'আপনার তথ্য ও সুরক্ষা',
+                    'about': 'পার্টনার সম্পর্কে',
+                    'home': 'হোম'
+                }
+            };
+
+            const t = translations[lang];
+            const h1 = document.querySelector('h1');
+            if (h1) h1.textContent = t.profile;
+            
+            const stats = document.querySelectorAll('.stat span');
+            if (stats[0]) stats[0].textContent = t.matches;
+            if (stats[1]) stats[1].textContent = t.likes;
+            if (stats[2]) stats[2].textContent = t.visits;
+            
+            const sections = document.querySelectorAll('.section-title');
+            if (sections[0]) sections[0].textContent = t.account;
+            if (sections[1]) sections[1].textContent = t.preferences;
+            if (sections[2]) sections[2].textContent = t.support;
+            
+            const items = document.querySelectorAll('.setting-item strong');
+            if (items[0]) items[0].textContent = t.mobile;
+            if (items[1]) items[1].textContent = t.gender;
+            if (items[2]) items[2].textContent = t.age;
+            if (items[3]) items[3].textContent = t.subscription;
+            if (items[4]) items[4].textContent = t.language;
+            if (items[5]) items[5].textContent = t.theme;
+            if (items[6]) items[6].textContent = t.notifications;
+            if (items[7]) items[7].textContent = t.help;
+            if (items[8]) items[8].textContent = t.privacy;
+            if (items[9]) items[9].textContent = t.about;
+            
+            const upgradeBtn = document.querySelectorAll('.btn-small')[0];
+            if (upgradeBtn) upgradeBtn.textContent = t.upgrade;
+            
+            const descriptions = document.querySelectorAll('.setting-item p');
+            if (descriptions[4]) descriptions[4].textContent = t.lang_desc;
+            if (descriptions[5]) descriptions[5].textContent = t.theme_desc;
+            if (descriptions[6]) descriptions[6].textContent = t.notif_desc;
+            if (descriptions[7]) descriptions[7].textContent = t.help_desc;
+            if (descriptions[8]) descriptions[8].textContent = t.privacy_desc;
+            
+            const navItems = document.querySelectorAll('.nav-item span');
+            if (navItems[0]) navItems[0].textContent = t.home;
+            if (navItems[1]) navItems[1].textContent = lang === 'bn' ? 'যোগ করুন' : 'Add';
+            if (navItems[2]) navItems[2].textContent = t.profile;
+        }
+        
+        function changeLanguage() {
+            const langSelect = document.getElementById('languageSelect');
+            if (langSelect) {
+                const language = langSelect.value;
+                localStorage.setItem('language', language);
+                location.reload();
+            }
+        }
+        
+        async function previewProfilePhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show local preview immediately
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Prepare form data for server upload
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!user.id) {
+                alert('User session not found. Please log in again.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('user_id', user.id);
+            formData.append('profile_pic', file);
+
+            try {
+                const response = await fetch('update_profile_pic.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update local storage with new user data
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    console.log('Profile picture updated successfully');
+                    
+                    // Update header if exists
+                    const headerImg = document.getElementById('headerProfilePic');
+                    if (headerImg) headerImg.src = data.user.profilePic;
+                    
+                    alert(localStorage.getItem('language') === 'bn' ? 'প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে!' : 'Profile picture updated successfully!');
+                } else {
+                    alert('Failed to update profile picture: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error updating profile picture:', error);
+                alert('An error occurred while uploading the picture.');
+            }
+        }
+        
+        function toggleTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const darkMode = themeToggle.checked;
+                document.body.classList.toggle('dark-mode', darkMode);
+                localStorage.setItem('darkMode', darkMode);
+            }
+        }
+        
+        function toggleNotifications() {
+            const notifToggle = document.getElementById('notificationsToggle');
+            if (notifToggle) {
+                const enabled = notifToggle.checked;
+                alert('Notifications ' + (enabled ? 'enabled' : 'disabled'));
+            }
+        }
+        
+        function goToSubscription() {
+            window.location.href = 'subscription.html';
+        }
+        
+        function logout() {
+            const lang = localStorage.getItem('language') || 'bn';
+            const confirmMsg = lang === 'bn' ? 'আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?' : 'Are you sure you want to logout?';
+            
+            if (confirm(confirmMsg)) {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const profilePic = user.profilePic;
+                const darkMode = localStorage.getItem('darkMode');
+                const language = localStorage.getItem('language');
+                
+                localStorage.clear();
+                
+                if (profilePic) {
+                    localStorage.setItem('user', JSON.stringify({ profilePic: profilePic }));
+                }
+                if (darkMode) localStorage.setItem('darkMode', darkMode);
+                if (language) localStorage.setItem('language', language);
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function showPrivacy() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+            document.getElementById('privacyModal').style.display = 'flex';
+        }
+
+        function showAbout() {
+            document.getElementById('aboutModal').classList.remove('hidden');
+            document.getElementById('aboutModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function closeChat() {
+            closeModal('chatModal');
+        }
+
+        function handleAddClick() {
+            const plan = localStorage.getItem('selectedPlan') || 'free';
+            if (plan === 'free') {
+                document.getElementById('subscriptionModal').classList.remove('hidden');
+                document.getElementById('subscriptionModal').style.display = 'flex';
+            } else {
+                alert('Premium feature unlocked!');
+            }
+        }
+    </script>
+</body>
+</html>

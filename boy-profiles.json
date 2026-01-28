@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Arif Ahmed",
+    "age": 26,
+    "location": "Dhaka",
+    "bio": "Software Engineer by profession, traveler by heart. Looking for someone to share life's adventures.",
+    "education": "B.Sc in Software Engineering",
+    "img": "https://ui-avatars.com/api/?name=Arif+Ahmed&background=1a1a1a&color=d4af37&size=512"
+  },
+  {
+    "name": "Sajid Hasan",
+    "age": 28,
+    "location": "Chittagong",
+    "bio": "Entrepreneur and fitness enthusiast. I believe in simple living and high thinking.",
+    "education": "MBA in Marketing",
+    "img": "https://ui-avatars.com/api/?name=Sajid+Hasan&background=4a4a4a&color=ffffff&size=512"
+  },
+  {
+    "name": "Tanvir Rahman",
+    "age": 24,
+    "location": "Sylhet",
+    "bio": "Architect and photography lover. Finding beauty in every corner of Bangladesh.",
+    "education": "B.Arch (Architecture)",
+    "img": "https://ui-avatars.com/api/?name=Tanvir+Rahman&background=1a1a1a&color=d4af37&size=512"
+  }
+]

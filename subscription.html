@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পার্টনার - প্ল্যান নির্বাচন করুন</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="subscription-container">
+        <div class="back-btn" onclick="window.location.href='home.html'">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        
+        <div class="subscription-header">
+            <h1>আপনার প্ল্যান বেছে নিন</h1>
+            <p>আরও ভালো সংযোগের জন্য অসাধারণ ফিচারগুলো আনলক করুন</p>
+        </div>
+        
+        <div class="plans">
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3>ফ্রি</h3>
+                    <div class="plan-price">
+                        <span class="price">৳০</span>
+                        <span class="period">/মাস</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> বেসিক ম্যাচিং</li>
+                    <li><i class="fas fa-check"></i> দৈনিক ৫টি লাইক</li>
+                    <li><i class="fas fa-times"></i> কোনো প্রায়োরিটি সাপোর্ট নেই</li>
+                    <li><i class="fas fa-times"></i> সীমিত মেসেজ</li>
+                </ul>
+                <button class="btn-outline" onclick="selectPlan('free')">
+                    বর্তমান প্ল্যান
+                </button>
+            </div>
+            
+            <div class="plan-card popular">
+                <div class="plan-badge">সবচেয়ে জনপ্রিয়</div>
+                <div class="plan-header">
+                    <h3>প্রিমিয়াম</h3>
+                    <div class="plan-price">
+                        <span class="price">৳৫৯</span>
+                        <span class="period">/মাস</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> আনলিমিটেড লাইক</li>
+                    <li><i class="fas fa-check"></i> দেখুন কে আপনাকে পছন্দ করেছে</li>
+                    <li><i class="fas fa-check"></i> প্রায়োরিটি সাপোর্ট</li>
+                    <li><i class="fas fa-check"></i> অ্যাডভান্সড ফিল্টার</li>
+                </ul>
+                <button class="btn-primary" onclick="selectPlan('premium')">
+                    প্রিমিয়াম নিন
+                </button>
+            </div>
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3>ভিআইপি</h3>
+                    <div class="plan-price">
+                        <span class="price">৳১৫৯</span>
+                        <span class="period">/মাস</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> সব প্রিমিয়াম ফিচার</li>
+                    <li><i class="fas fa-check"></i> ভেরিফাইড ব্যাজ</li>
+                    <li><i class="fas fa-check"></i> পার্সোনাল অ্যাসিস্ট্যান্ট</li>
+                    <li><i class="fas fa-check"></i> এক্সক্লুসিভ ইভেন্টস</li>
+                </ul>
+                <button class="btn-primary" onclick="selectPlan('vip')">
+                    ভিআইপি নিন
+                </button>
+            </div>
+        </div>
+        
+        <div class="subscription-footer">
+            <button class="btn-primary continue-btn" onclick="continueToHome()">
+                অ্যাপে ফিরে যান
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <p class="note">আপনি যেকোনো সময় আপগ্রেড করতে পারেন। যেকোনো মাসে বাতিলযোগ্য।</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        window.onload = function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            const savedPlan = localStorage.getItem('selectedPlan') || 'free';
+            document.querySelectorAll('.plan-card').forEach(card => {
+                if (card.querySelector('h3').textContent.toLowerCase() === savedPlan || 
+                    (savedPlan === 'free' && card.querySelector('h3').textContent === 'ফ্রি') ||
+                    (savedPlan === 'premium' && card.querySelector('h3').textContent === 'প্রিমিয়াম') ||
+                    (savedPlan === 'vip' && card.querySelector('h3').textContent === 'ভিআইপি')) {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        function selectPlan(plan) {
+            const cards = document.querySelectorAll('.plan-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            
+            const selectedCard = event.target.closest('.plan-card');
+            selectedCard.classList.add('selected');
+            
+            const priceText = selectedCard.querySelector('.price').textContent;
+            // Clean the price text to get only numbers (e.g., "৳৫৯" -> "৫৯")
+            const rawPrice = priceText.replace(/[^০-৯0-9]/g, '');
+            
+            // Convert Bengali numerals to English for the URL parameter
+            const bengaliToEnglish = {
+                '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+                '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9'
+            };
+            const price = rawPrice.split('').map(char => bengaliToEnglish[char] || char).join('');
+            
+            const planName = selectedCard.querySelector('h3').textContent;
+            
+            localStorage.setItem('selectedPlan', plan);
+            localStorage.setItem('planPrice', price);
+            localStorage.setItem('planName', planName);
+
+            if (plan !== 'free') {
+                window.location.href = `bkash_payment.html?plan=${encodeURIComponent(plan)}&price=${price}`;
+            }
+        }
+        
+        function continueToHome() {
+            window.location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>
+</body>
+</html>

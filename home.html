@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner - Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-small">🤝</div>
+                <h1>Partner</h1>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="openFakeModal('notificationsModal')">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notifBadge">0</span>
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="welcome-card">
+                <div class="welcome-text">
+                    <h2>Welcome back!</h2>
+                    <p>Ready to connect with amazing people?</p>
+                </div>
+                <div class="profile-preview">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="Profile">
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="action-btn" onclick="openFakeModal('matchesModal')">
+                    <i class="fas fa-heart"></i>
+                    <span>Matches</span>
+                </button>
+                <button class="action-btn" onclick="openFakeModal('discoverModal')">
+                    <i class="fas fa-compass"></i>
+                    <span>Discover</span>
+                </button>
+                <button class="action-btn" onclick="openMessages()">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </button>
+            </div>
+            
+            <div class="stats-bar" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; background: var(--white); border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <div style="text-align: center; border-right: 1px solid var(--border);">
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.3rem; margin-bottom: 2px;">৫,২৪০+</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">সদস্য</div>
+                </div>
+                <div style="text-align: center; border-right: 1px solid var(--border);">
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.3rem; margin-bottom: 2px;">১,২০০+</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">সফল জুটি</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.3rem; margin-bottom: 2px;">২৪/৭</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">সাপোর্ট</div>
+                </div>
+            </div>
+
+            <div class="filter-tabs" style="display: flex; gap: 10px; margin-bottom: 20px; padding: 0 10px;">
+                <button id="showGirlsBtn" class="btn-primary" style="flex: 1; border-radius: 20px;" onclick="switchGender('girls')">
+                    <i class="fas fa-venus"></i> <span class="tab-text">Women</span>
+                </button>
+                <button id="showBoysBtn" class="btn-outline" style="flex: 1; border-radius: 20px;" onclick="switchGender('boys')">
+                    <i class="fas fa-mars"></i> <span class="tab-text">Men</span>
+                </button>
+            </div>
+
+            <div id="girlsSection" class="section">
+                <h3 class="section-title">Women Profiles</h3>
+                <div class="profile-grid" id="girlPicks">
+                    <!-- Girls profiles will be loaded here -->
+                </div>
+            </div>
+
+            <div id="boysSection" class="section" style="display: none;">
+                <h3 class="section-title">Men Profiles</h3>
+                <div class="profile-grid" id="boyPicks">
+                    <!-- Boys profiles will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subscription-teaser" style="margin-top: 30px; text-align: center; padding: 20px; background: rgba(102, 126, 234, 0.1); border-radius: 15px; border: 1px dashed #667eea;">
+                    <p id="subTeaserText" style="margin-bottom: 15px; font-weight: 600; color: #4b5563;">To see more profiles, buy a subscription!</p>
+                    <button class="btn-primary" onclick="goToSubscription()">
+                        <i class="fas fa-crown"></i> <span id="subBtnText">Buy Subscription</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Floating Add Button -->
+        <button class="fab" onclick="handleAddClick()">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="home.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="handleAddClick(); return false;">
+                <i class="fas fa-plus"></i>
+                <span>Add</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+        
+        <!-- Subscription Popup -->
+        <div id="subscriptionModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 99999; display: none; align-items: center; justify-content: center;">
+            <div class="modal" style="background: white; width: 90%; max-width: 380px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+                <div class="modal-header" style="padding: 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin:0;">Upgrade to Premium</h3>
+                    <button onclick="closeSubscriptionModal()" style="background:transparent; border:none; color:white; font-size:28px; cursor:pointer;">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 30px 24px; text-align: center;">
+                    <div class="premium-animation" style="font-size: 64px; color: #FFD700; margin-bottom: 20px;">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h4>Unlock Amazing Features!</h4>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Subscribe to Premium to connect with everyone.</p>
+                    <ul class="premium-features" style="text-align: left; list-style: none; padding: 0; margin-bottom: 25px;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> See who likes you</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> Unlimited likes</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i> Advanced filters</li>
+                    </ul>
+                    <button class="btn-primary" onclick="goToSubscription()" style="margin-bottom: 12px; width: 100%;">
+                        View Plans
+                    </button>
+                    <button class="btn-outline" onclick="closeSubscriptionModal()" style="width: 100%;">
+                        Maybe Later
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Notifications Modal -->
+        <div class="modal-overlay hidden" id="notificationsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="notifModalTitle">Notifications</h3>
+                    <button class="modal-close" onclick="closeFakeModal('notificationsModal')">&times;</button>
+                </div>
+                <div class="modal-body" id="notifList" style="padding: 10px; max-height: 400px; overflow-y: auto;">
+                    <!-- Notification items will be injected here -->
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-bell-slash" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                        <h4 id="noNotifTitle">No New Notifications</h4>
+                        <p id="noNotifText" style="color: #6b7280;">You are all caught up!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matches Modal -->
+        <div class="modal-overlay hidden" id="matchesModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="matchesModalTitle">Matches</h3>
+                    <button class="modal-close" onclick="closeFakeModal('matchesModal')">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-heart-broken" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                    <h4 id="noMatchesTitle">No Matches Yet</h4>
+                    <p id="noMatchesText" style="color: #6b7280;">Keep exploring to find your perfect match!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discover Modal -->
+        <div class="modal-overlay hidden" id="discoverModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="discoverModalTitle">Discover</h3>
+                    <button class="modal-close" onclick="closeFakeModal('discoverModal')">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-search" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                    <h4 id="discoverTitle">Discover People</h4>
+                    <p id="discoverText" style="color: #6b7280;">Advanced discovery features are coming soon.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Modal -->
+        <div class="modal-overlay hidden" id="messagesModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="msgModalTitle">Messages</h3>
+                    <button class="modal-close" onclick="closeMessagesModal()">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <h4 id="noMsgTitle">No Messages</h4>
+                    <p id="noMsgText" style="color: #6b7280; margin-bottom: 25px;">You haven't started any conversations yet.</p>
+                    <button class="btn-primary" onclick="scrollToTodayPicks()" id="findPartnerBtn">
+                        Find a Partner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function renderNotifications() {
+            const notifList = document.getElementById('notifList');
+            const lang = localStorage.getItem('language') || 'bn';
+            if (!notifList) return;
+
+            const notifications = [
+                {
+                    id: 1,
+                    title: lang === 'bn' ? 'নতুন ম্যাচ!' : 'New Match!',
+                    desc: lang === 'bn' ? 'আপনার প্রোফাইলে ১টি নতুন লাইক এসেছে।' : 'You have 1 new like on your profile.',
+                    time: lang === 'bn' ? '১০ মিনিট আগে' : '10 mins ago',
+                    icon: 'fa-heart'
+                },
+                {
+                    id: 2,
+                    title: lang === 'bn' ? 'ভেরিফিকেশন সফল' : 'Verification Success',
+                    desc: lang === 'bn' ? 'আপনার প্রোফাইল এখন ভেরিফাইড।' : 'Your profile is now verified.',
+                    time: lang === 'bn' ? '১ ঘন্টা আগে' : '1 hour ago',
+                    icon: 'fa-check-circle'
+                }
+            ];
+
+            // Update badge
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.textContent = notifications.length;
+
+            if (notifications.length === 0) {
+                notifList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-bell-slash" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                        <h4>${lang === 'bn' ? 'নতুন কোনো নোটিফিকেশন নেই' : 'No New Notifications'}</h4>
+                        <p style="color: #6b7280;">${lang === 'bn' ? 'আপনি সব নোটিফিকেশন দেখেছেন!' : 'You are all caught up!'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            notifList.innerHTML = notifications.map(n => `
+                <div class="notif-item" style="display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #f3f4f6; align-items: flex-start;">
+                    <div style="background: var(--primary-light); color: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas ${n.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h5 style="margin: 0; font-size: 14px; font-weight: 700; color: #1f2937;">${n.title}</h5>
+                        <p style="margin: 4px 0; font-size: 12px; color: #6b7280; line-height: 1.4;">${n.desc}</p>
+                        <span style="font-size: 10px; color: #9ca3af;">${n.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function getNotificationCount() {
+            const lang = localStorage.getItem('language') || 'bn';
+            // This should match the notifications array in renderNotifications
+            const notifications = [
+                { id: 1 },
+                { id: 2 }
+            ];
+            return notifications.length;
+        }
+
+        window.onload = async function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            const lang = localStorage.getItem('language') || 'bn';
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Set notification badge initial value immediately
+            const count = await getNotificationCount();
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.textContent = count;
+
+            renderNotifications();
+            
+            if (lang === 'bn') {
+                document.querySelector('.welcome-text h2').textContent = 'স্বাগতম, ' + (user.name || 'বন্ধু') + '!';
+                document.querySelector('.welcome-text p').textContent = 'সেরা মানুষের সাথে সংযুক্ত হতে আপনি প্রস্তুত তো?';
+                document.querySelector('h1').textContent = 'পার্টনার';
+                document.querySelectorAll('.nav-item span')[0].textContent = 'হোম';
+                document.querySelectorAll('.nav-item span')[1].textContent = 'যোগ করুন';
+                document.querySelectorAll('.nav-item span')[2].textContent = 'প্রোফাইল';
+                
+                const titles = document.querySelectorAll('.section-title');
+                if (titles[0]) titles[0].textContent = 'মেয়েদের প্রোফাইল';
+                if (titles[1]) titles[1].textContent = 'ছেলেদের প্রোফাইল';
+                
+                const showGirlsBtn = document.getElementById('showGirlsBtn');
+                const showBoysBtn = document.getElementById('showBoysBtn');
+                if (showGirlsBtn) showGirlsBtn.querySelector('.tab-text').textContent = 'মেয়ে';
+                if (showBoysBtn) showBoysBtn.querySelector('.tab-text').textContent = 'ছেলে';
+                
+                // Messages translations
+                document.getElementById('msgModalTitle').textContent = 'মেসেজ';
+                document.getElementById('noMsgTitle').textContent = 'কোনো মেসেজ নেই';
+                document.getElementById('noMsgText').textContent = 'আপনি এখনও কোনো কথোপকথন শুরু করেননি।';
+                document.getElementById('findPartnerBtn').textContent = 'পার্টনার খুঁজুন';
+
+                // New translations
+                document.getElementById('notifModalTitle').textContent = 'নোটিফিকেশন';
+                document.getElementById('noNotifTitle').textContent = 'নতুন কোনো নোটিফিকেশন নেই';
+                document.getElementById('noNotifText').textContent = 'আপনি সব নোটিফিকেশন দেখেছেন!';
+
+                document.querySelector('.stats-bar').children[0].children[1].textContent = 'সদস্য';
+                document.querySelector('.stats-bar').children[1].children[1].textContent = 'সফল জুটি';
+                document.querySelector('.stats-bar').children[2].children[1].textContent = 'সাপোর্ট';
+
+                document.getElementById('matchesModalTitle').textContent = 'ম্যাচ';
+                document.getElementById('noMatchesTitle').textContent = 'এখনও কোনো ম্যাচ নেই';
+                document.getElementById('noMatchesText').textContent = 'পারফেক্ট ম্যাচ খুঁজে পেতে আরও এক্সপ্লোর করুন!';
+
+                document.getElementById('discoverModalTitle').textContent = 'আবিষ্কার করুন';
+                document.getElementById('discoverTitle').textContent = 'মানুষ খুঁজুন';
+                document.getElementById('discoverText').textContent = 'অ্যাডভান্সড ডিসকভারি ফিচার শীঘ্রই আসছে।';
+
+                document.getElementById('subTeaserText').textContent = 'আরও প্রোফাইল দেখতে সাবস্ক্রিপশন কিনুন!';
+                document.getElementById('subBtnText').textContent = 'সাবস্ক্রিপশন কিনুন';
+
+                // Real-time Activity Message
+                const activityTexts = [
+                    'সবেমাত্র ১ জন নতুন মেম্বার জয়েন করেছেন',
+                    'এখনই একজন নতুন প্রোফাইল ভেরিফাইড হয়েছে',
+                    'আজ ১২ জন নতুন ম্যাচ তৈরি হয়েছে'
+                ];
+                const randomActivity = activityTexts[Math.floor(Math.random() * activityTexts.length)];
+                const activityDiv = document.createElement('div');
+                activityDiv.style.cssText = 'background: rgba(212, 175, 55, 0.1); color: var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-size: 0.85rem; border: 1px solid rgba(212, 175, 55, 0.2);';
+                activityDiv.innerHTML = `<i class="fas fa-bolt"></i> ${randomActivity}`;
+                document.querySelector('.stats-bar').insertAdjacentElement('afterend', activityDiv);
+            }
+            
+            if (user.name) {
+                if (user.profilePic) {
+                    document.querySelector('.profile-preview img').src = user.profilePic;
+                } else {
+                    document.querySelector('.profile-preview img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff`;
+                }
+            }
+
+            loadProfiles('get_users_by_gender.php?gender=female', 'girlPicks');
+            loadProfiles('get_users_by_gender.php?gender=male', 'boyPicks');
+        };
+
+        async function loadProfiles(url, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log('API Response:', data); // Debug log
+                const profiles = data.users || [];
+                
+                if (profiles.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">No profiles found.</p>';
+                    return;
+                }
+                
+                container.innerHTML = profiles.map(p => `
+                    <div class="profile-card" onclick="location.href='profile-view.html?id=${p.id}'">
+                        <div class="profile-img">
+                            <img src="${p.profile_pic || 'https://ui-avatars.com/api/?name='+encodeURIComponent(p.name)}" alt="${p.name}">
+                        </div>
+                        <div class="profile-info">
+                            <h4>${p.name}, ${p.age}</h4>
+                            <p><i class="fas fa-map-marker-alt"></i> ${p.location || 'Dhaka'}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Error loading profiles:', e);
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">Failed to load profiles.</p>';
+            }
+        }
+
+        function switchGender(gender) {
+            const girlsSection = document.getElementById('girlsSection');
+            const boysSection = document.getElementById('boysSection');
+            const girlsBtn = document.getElementById('showGirlsBtn');
+            const boysBtn = document.getElementById('showBoysBtn');
+
+            if (gender === 'girls') {
+                girlsSection.style.display = 'block';
+                boysSection.style.display = 'none';
+                girlsBtn.className = 'btn-primary';
+                boysBtn.className = 'btn-outline';
+            } else {
+                girlsSection.style.display = 'none';
+                boysSection.style.display = 'block';
+                girlsBtn.className = 'btn-outline';
+                boysBtn.className = 'btn-primary';
+            }
+        }
+
+        function openMessages() {
+            document.getElementById('messagesModal').classList.remove('hidden');
+        }
+
+        function closeMessagesModal() {
+            document.getElementById('messagesModal').classList.add('hidden');
+        }
+
+        function openFakeModal(modalId) {
+            console.log('Opening modal:', modalId);
+            if (modalId === 'notificationsModal') {
+                renderNotifications();
+            }
+            if (modalId === 'matchesModal') {
+                if (typeof updateMatchesUI === 'function') {
+                    updateMatchesUI();
+                }
+            }
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex'; // Ensure it's visible if hidden class uses display: none
+            } else {
+                console.error('Modal not found:', modalId);
+            }
+        }
+
+        async function updateMatchesUI() {
+            console.log('Updating Matches UI');
+            const lang = localStorage.getItem('language') || 'bn';
+            const likedNames = JSON.parse(localStorage.getItem('likedProfiles') || '[]');
+            const matchesModal = document.getElementById('matchesModal');
+            if (!matchesModal) return;
+            
+            const matchesList = matchesModal.querySelector('.modal-body');
+            if (!matchesList) return;
+            
+            if (likedNames.length === 0) {
+                matchesList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-heart-broken" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                        <h4 id="noMatchesTitle">${lang === 'bn' ? 'এখনও কোনো ম্যাচ নেই' : 'No Matches Yet'}</h4>
+                        <p id="noMatchesText" style="color: #6b7280;">${lang === 'bn' ? 'পারফেক্ট ম্যাচ খুঁজে পেতে আরও এক্সপ্লোর করুন!' : 'Keep exploring to find your perfect match!'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const responseGirls = await fetch('girl-profiles.json');
+                const responseBoys = await fetch('boy-profiles.json');
+                const girls = await responseGirls.json();
+                const boys = await responseBoys.json();
+                const allProfiles = [...girls, ...boys];
+                const likedProfiles = allProfiles.filter(p => likedNames.includes(p.name));
+
+                if (likedProfiles.length > 0) {
+                    matchesList.innerHTML = `
+                        <div class="matches-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; padding: 10px;">
+                            ${likedProfiles.map(p => `
+                                <div class="match-item" style="text-align: center; background: var(--bg-light); padding: 15px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer;" onclick="window.location.href='profile-view.html?name=${encodeURIComponent(p.name)}'">
+                                    <img src="${p.img}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin-bottom: 10px;">
+                                    <h5 style="margin: 0; font-size: 14px; color: var(--text-main); font-weight: 700;">${p.name}</h5>
+                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-map-marker-alt" style="font-size: 10px;"></i> ${p.location}</p>
+                                    <button class="btn-primary" style="margin-top: 10px; padding: 8px; font-size: 12px; border-radius: 8px;">
+                                        <i class="fas fa-comment"></i> ${lang === 'bn' ? 'চ্যাট' : 'Chat'}
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error('Error updating matches:', e);
+            }
+        }
+
+        async function updateDiscoverUI() {
+            const lang = localStorage.getItem('language') || 'bn';
+            const discoverModal = document.getElementById('discoverModal');
+            if (!discoverModal) return;
+            
+            const discoverBody = discoverModal.querySelector('.modal-body');
+            if (!discoverBody) return;
+
+            try {
+                const responseGirls = await fetch('girl-profiles.json');
+                const responseBoys = await fetch('boy-profiles.json');
+                const girls = await responseGirls.json();
+                const boys = await responseBoys.json();
+                const allProfiles = [...girls, ...boys];
+                
+                // Shuffle and pick 4 random suggestions
+                const suggestions = allProfiles.sort(() => 0.5 - Math.random()).slice(0, 4);
+
+                discoverBody.innerHTML = `
+                    <div style="padding: 10px;">
+                        <h4 style="margin-bottom: 20px; font-size: 1rem; color: var(--text-main); text-align: left;">
+                            <i class="fas fa-sparkles" style="color: var(--accent);"></i> ${lang === 'bn' ? 'আপনার জন্য কিছু প্রোফাইল' : 'Suggested for you'}
+                        </h4>
+                        <div class="discover-grid" style="display: flex; flex-direction: column; gap: 12px;">
+                            ${suggestions.map(p => `
+                                <div class="discover-item" style="display: flex; align-items: center; gap: 15px; padding: 12px; background: var(--bg-light); border-radius: 15px; border: 1px solid var(--border); cursor: pointer;" onclick="window.location.href='profile-view.html?name=${encodeURIComponent(p.name)}'">
+                                    <img src="${p.img}" style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover;">
+                                    <div style="flex: 1; text-align: left;">
+                                        <h5 style="margin: 0; font-size: 14px; color: var(--text-main);">${p.name}, ${lang === 'bn' ? p.age.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : p.age}</h5>
+                                        <p style="margin: 3px 0 0; font-size: 12px; color: var(--text-muted);"><i class="fas fa-graduation-cap" style="font-size: 10px;"></i> ${p.education || (lang === 'bn' ? 'শিক্ষিত' : 'Educated')}</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="btn-outline" style="margin-top: 20px; border-radius: 12px; padding: 12px;" onclick="updateDiscoverUI()">
+                            <i class="fas fa-sync"></i> ${lang === 'bn' ? 'আরও দেখুন' : 'Refresh Suggestions'}
+                        </button>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('Error updating discover:', e);
+            }
+        }
+
+        function renderNotifications() {
+            const notifList = document.getElementById('notifList');
+            const lang = localStorage.getItem('language') || 'bn';
+            
+            // Get user and registration time
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const regTime = parseInt(localStorage.getItem('registration_time') || Date.now());
+            const now = Date.now();
+            const accountAgeMins = Math.floor((now - regTime) / 60000);
+
+            // Get or initialize stored notifications
+            let notifications = JSON.parse(localStorage.getItem('user_notifications') || '[]');
+            
+            const lastUpdate = localStorage.getItem('last_notif_gen') || 0;
+            
+            // Generate notifications only if account is old enough (e.g., > 1 min)
+            // or if it's the first time and we have no notifications
+            if (accountAgeMins >= 1 && (notifications.length === 0 || (now - lastUpdate > 3600000))) {
+                notifications = generateDynamicNotifications(lang, regTime);
+                localStorage.setItem('user_notifications', JSON.stringify(notifications));
+                localStorage.setItem('last_notif_gen', now);
+            }
+
+            const texts = {
+                like: lang === 'bn' ? 'আপনার প্রোফাইল পছন্দ করেছেন' : 'liked your profile',
+                view: lang === 'bn' ? 'আপনার প্রোফাইল দেখেছেন' : 'viewed your profile',
+                system: lang === 'bn' ? 'আপনার প্রোফাইল ভেরিফাইড হয়েছে' : 'Your profile is now verified',
+                match: lang === 'bn' ? 'আপনার সাথে নতুন ম্যাচ তৈরি হয়েছে!' : 'found a new match with you!'
+            };
+
+            if (notifications.length > 0) {
+                // Filter notifications that happened BEFORE registration (just in case)
+                // and show only those that happened after registration
+                const validNotifs = notifications.filter(n => n.timestamp >= regTime);
+
+                if (validNotifs.length === 0) {
+                    showNoNotificationsUI(notifList, lang);
+                    return;
+                }
+
+                notifList.innerHTML = validNotifs.map(n => {
+                    const elapsedMins = Math.floor((now - n.timestamp) / 60000);
+                    let timeLabel;
+                    if (lang === 'bn') {
+                        timeLabel = elapsedMins < 1 ? 'সবেমাত্র' : `${elapsedMins.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d])} মিনিট আগে`;
+                        if (elapsedMins >= 60) {
+                            const hours = Math.floor(elapsedMins / 60);
+                            timeLabel = `${hours.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d])} ঘণ্টা আগে`;
+                        }
+                    } else {
+                        timeLabel = elapsedMins < 1 ? 'Just now' : `${elapsedMins}m ago`;
+                        if (elapsedMins >= 60) {
+                            timeLabel = `${Math.floor(elapsedMins / 60)}h ago`;
+                        }
+                    }
+
+                    return `
+                        <div class="notif-item" style="display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--border); transition: background 0.3s; cursor: pointer; ${n.isRead ? 'opacity: 0.7;' : 'background: rgba(212, 175, 55, 0.03);'}">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: ${n.color}20; display: flex; align-items: center; justify-content: center; color: ${n.color}; font-size: 1.2rem; position: relative;">
+                                <i class="fas ${n.icon}"></i>
+                                ${!n.isRead ? '<div style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ef4444; border: 2px solid white; border-radius: 50%;"></div>' : ''}
+                            </div>
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0; font-size: 0.95rem; color: var(--text-main);">${n.user}</h5>
+                                <p style="margin: 2px 0 0; font-size: 0.85rem; color: var(--text-muted);">${texts[n.type]}</p>
+                            </div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); white-space: nowrap;">${timeLabel}</span>
+                        </div>
+                    `;
+                }).join('');
+                
+                setTimeout(() => {
+                    const updatedNotifs = notifications.map(n => ({...n, isRead: true}));
+                    localStorage.setItem('user_notifications', JSON.stringify(updatedNotifs));
+                }, 2000);
+            } else {
+                showNoNotificationsUI(notifList, lang);
+            }
+        }
+
+        function showNoNotificationsUI(el, lang) {
+            el.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-bell-slash" style="font-size: 50px; color: #e5e7eb; margin-bottom: 20px;"></i>
+                    <h4 id="noNotifTitle">${lang === 'bn' ? 'নতুন কোনো নোটিফিকেশন নেই' : 'No New Notifications'}</h4>
+                    <p id="noNotifText" style="color: #6b7280;">${lang === 'bn' ? 'আপনি সব নোটিফিকেশন দেখেছেন!' : 'You are all caught up!'}</p>
+                </div>
+            `;
+        }
+
+        function generateDynamicNotifications(lang, regTime) {
+            const names = ['সাদিয়া ইসলাম', 'সুমাইয়া নূর', 'জান্নাতুল ফেরদৌস', 'মেহরিন সুলতানা', 'তাসনিম জারা', 'আফরিন সুলতানা'];
+            const types = ['like', 'view', 'match'];
+            const icons = { like: 'fa-heart', view: 'fa-eye', match: 'fa-fire', system: 'fa-check-circle' };
+            const colors = { like: '#ef4444', view: '#3b82f6', match: '#f59e0b', system: '#10b981' };
+            
+            const notifs = [];
+            const now = Date.now();
+            const maxMins = Math.floor((now - regTime) / 60000);
+
+            if (maxMins < 1) return []; // Too early
+
+            // Generate 1-3 random ones based on how long they've been here
+            const count = Math.min(3, 1 + Math.floor(maxMins / 5)); 
+            
+            for(let i=0; i<count; i++) {
+                const type = types[Math.floor(Math.random() * types.length)];
+                // Ensure notification timestamp is between registration and now
+                const offset = Math.floor(Math.random() * (now - regTime));
+                const timestamp = regTime + offset;
+                
+                notifs.push({
+                    id: timestamp,
+                    timestamp: timestamp,
+                    type: type,
+                    user: names[Math.floor(Math.random() * names.length)],
+                    icon: icons[type],
+                    color: colors[type],
+                    isRead: false
+                });
+            }
+            
+            return notifs.sort((a, b) => b.timestamp - a.timestamp);
+        }
+
+        function closeFakeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        function scrollToTodayPicks() {
+            closeMessagesModal();
+            const girlsSection = document.getElementById('girlPicks');
+            if (girlsSection) girlsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function loadProfiles(sourceFile, gridId) {
+            const lang = localStorage.getItem('language') || 'bn';
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Loading...</div>';
+
+            try {
+                const response = await fetch(sourceFile);
+                const data = await response.json();
+                const profiles = data.users || data || [];
+                
+                grid.innerHTML = '';
+
+                if (!Array.isArray(profiles) || profiles.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">No profiles found.</div>';
+                    return;
+                }
+
+                profiles.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'profile-card';
+                    
+                    // Randomly set some profiles to offline (40% chance)
+                    if (Math.random() < 0.4) {
+                        card.classList.add('offline');
+                    }
+                    
+                    card.onclick = () => window.location.href = `profile-view.html?id=${p.id}`;
+                    
+                    const displayAge = lang === 'bn' ? (p.age || 0).toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : (p.age || '');
+                    const locationLabel = lang === 'bn' ? 'ঠিকানা: ' : 'Location: ';
+                    const isVerified = Math.random() < 0.2;
+                    const profileImg = p.profile_pic || p.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=6366f1&color=fff`;
+                    const location = p.location || 'Dhaka';
+                    const bio = p.bio || '';
+                    
+                    card.innerHTML = `
+                        <div class="profile-img">
+                            <img src="${profileImg}" alt="${p.name}">
+                            ${isVerified ? '<div class="verified-badge" title="Verified Member" style="position: absolute; bottom: 8px; right: 8px; background: var(--accent); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; z-index: 3;"><i class="fas fa-check"></i></div>' : ''}
+                        </div>
+                        <div class="profile-info">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <h4 style="flex: 1;">${p.name}, ${displayAge}</h4>
+                                <button class="like-btn" onclick="event.stopPropagation(); if(typeof handleLike === 'function') handleLike('${p.name}');" style="width: 30px; height: 30px; padding: 0; font-size: 14px; background: var(--bg-light); border: 1px solid var(--border); border-radius: 50%; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <p style="font-size: 12px; margin-top: 4px;"><strong>${locationLabel}</strong>${location}</p>
+                            ${bio ? `<p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">${bio}</p>` : ''}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: red;">Failed to load profiles.</div>';
+            }
+        }
+        function handleAddClick() {
+            const plan = localStorage.getItem('selectedPlan') || 'free';
+            
+            if (plan === 'free') {
+                document.getElementById('subscriptionModal').classList.remove('hidden');
+            } else {
+                // Handle premium add action
+                alert('Premium feature: Adding new content!');
+            }
+        }
+        
+        function showSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.remove('hidden');
+        }
+        
+        function closeSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.add('hidden');
+        }
+        
+        function goToSubscription() {
+            window.location.href = 'subscription.html';
+        }
+        
+        function showNotifications() {
+            alert('Notifications: 3 new matches waiting!');
+        }
+        
+        function showMatches() {
+            alert('Your matches will appear here');
+        }
+        
+        function showDiscover() {
+            alert('Discover new people');
+        }
+        
+        function showMessages() {
+            openMessages();
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const subModal = document.getElementById('subscriptionModal');
+            const msgModal = document.getElementById('messagesModal');
+            const notifModal = document.getElementById('notificationsModal');
+            const matchesModal = document.getElementById('matchesModal');
+            const discoverModal = document.getElementById('discoverModal');
+            
+            if (event.target === subModal) closeSubscriptionModal();
+            if (event.target === msgModal) closeMessagesModal();
+            if (event.target === notifModal) closeFakeModal('notificationsModal');
+            if (event.target === matchesModal) closeFakeModal('matchesModal');
+            if (event.target === discoverModal) closeFakeModal('discoverModal');
+        }
+        function handleAddClick() {
+            console.log('Add button clicked');
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) {
+                // Ensure hidden class is removed
+                modal.classList.remove('hidden');
+                
+                // Use a small timeout to ensure the DOM has updated before forcing display
+                setTimeout(() => {
+                    modal.style.setProperty('display', 'flex', 'important');
+                    modal.style.setProperty('visibility', 'visible', 'important');
+                    modal.style.setProperty('opacity', '1', 'important');
+                    
+                    // Add blur effect ONLY to main content, not the overlay or modal
+                    const main = document.querySelector('.app-main');
+                    const header = document.querySelector('.app-header');
+                    const nav = document.querySelector('.bottom-nav');
+                    const fab = document.querySelector('.fab');
+                    
+                    [main, header, nav, fab].forEach(el => {
+                        if (el) {
+                            el.style.filter = 'blur(10px)';
+                            el.style.transition = 'filter 0.4s ease';
+                        }
+                    });
+                }, 10);
+                
+                // Ensure modal is on top
+                modal.style.zIndex = '1000000';
+            } else {
+                console.error('Subscription modal not found');
+            }
+        }
+
+        function closeSubscriptionModal() {
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.setProperty('display', 'none', 'important');
+                
+                const elements = document.querySelectorAll('.app-main, .app-header, .bottom-nav, .fab');
+                elements.forEach(el => {
+                    if (el) el.style.filter = 'none';
+                });
+            }
+        }
+
+        function goToSubscription() {
+            window.location.href = 'subscription.html';
+        }
+    </script>
+</body>
+</html>

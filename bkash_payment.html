@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bKash Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background-color: #e2136e;
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 12px rgba(226, 19, 110, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .payment-section {
+            background-color: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #e2136e;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .amount-display {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 5px solid #e2136e;
+        }
+        
+        .amount-display h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .amount {
+            color: #e2136e;
+            font-size: 42px;
+            font-weight: 700;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .instructions h3 {
+            color: #e2136e;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            background-color: #e2136e;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-content p {
+            margin-bottom: 5px;
+        }
+        
+        .phone-number {
+            background-color: #fff0f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2136e;
+            letter-spacing: 1px;
+        }
+        
+        .copy-btn {
+            background-color: #e2136e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #c0105c;
+        }
+        
+        .amount-input {
+            background-color: #fff0f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2136e;
+        }
+        
+        .transaction-section {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .transaction-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        
+        .transaction-input:focus {
+            border-color: #e2136e;
+            outline: none;
+        }
+        
+        .verify-btn {
+            background-color: #e2136e;
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: 700;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.2s;
+            letter-spacing: 1px;
+        }
+        
+        .verify-btn:hover {
+            background-color: #c0105c;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .note {
+            color: #666;
+            font-style: italic;
+            font-size: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+        }
+        
+        /* Custom Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+        
+        .custom-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes modalSlideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-icon {
+            font-size: 60px;
+            color: #e2136e;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #e2136e;
+        }
+        
+        .modal-text {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .modal-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 28px; }
+            .payment-section { padding: 20px; }
+            .section-title { font-size: 22px; }
+            .amount { font-size: 36px; }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 24px; }
+            .section-title { font-size: 20px; }
+            .amount { font-size: 32px; }
+            .step { flex-direction: column; }
+            .step-number { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Modal Markup -->
+    <div id="customModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div class="modal-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="modal-title">Submission Successful</div>
+            <div class="modal-text" id="modalMessage"></div>
+            <button class="modal-btn" onclick="closeModal()">OK, Got it</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-mobile-alt"></i> bKash</h1>
+            <p>Payment</p>
+        </div>
+        
+        <div class="payment-section">
+            <div class="amount-display">
+                <h2>Amount to Pay</h2>
+                <div class="amount">৳ <span id="displayAmount">0</span></div>
+            </div>
+            
+            <h2 class="section-title">Please enter your transaction ID</h2>
+            
+            <div class="instructions">
+                <h3>Payment Instructions:</h3>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>Dial <strong>*247#</strong> on your mobile phone or open the bKash app</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>Click on "Send Money"</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>Enter the recipient number:</p>
+                        <div class="phone-number">01342130668</div>
+                        <button class="copy-btn" id="copyBtn">
+                            <i class="far fa-copy"></i> Copy Number
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <p>Enter the amount:</p>
+                        <div class="amount-input">৳ <span id="instructionAmount">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <p>Enter your bKash PIN to complete the transaction</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <p>If everything is correct, you will receive a confirmation message from bKash</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="note">Now enter the transaction ID from the confirmation message and click the VERIFY button below.</p>
+            
+            <div class="transaction-section">
+                <h3 class="section-title">Transaction Verification</h3>
+                <input type="text" class="transaction-input" id="transactionId" placeholder="Enter your transaction ID here">
+                <button class="verify-btn" id="verifyBtn">
+                    <i class="fas fa-check-circle"></i> VERIFY
+                </button>
+            </div>
+            
+            <div class="footer">
+                <p>© 2025 bKash. All rights reserved.</p>
+                <p>Need help? Call 16247</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get plan and price from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan') || 'Free';
+        const price = urlParams.get('price') || '0';
+        
+        document.getElementById('displayAmount').textContent = price;
+        document.getElementById('instructionAmount').textContent = price;
+
+        // Custom Modal Functions
+        function showCustomModal(message) {
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+            window.location.href = 'home.html';
+        }
+
+        // Copy phone number functionality
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const phoneNumber = '01342130668';
+            navigator.clipboard.writeText(phoneNumber).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                this.style.backgroundColor = '#28a745';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.backgroundColor = '';
+                }, 2000);
+            });
+        });
+        
+        // Verify button functionality
+        document.getElementById('verifyBtn').addEventListener('click', async function() {
+            const transactionId = document.getElementById('transactionId').value.trim();
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!transactionId) {
+                alert('Please enter your transaction ID to verify.');
+                document.getElementById('transactionId').focus();
+                return;
+            }
+
+            if (!user.id) {
+                alert('Please login first');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            this.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'add_payment');
+                formData.append('user_id', user.id);
+                formData.append('amount', price);
+                formData.append('trx_id', transactionId);
+
+                const res = await fetch('admin_api.php', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (data.success) {
+                    this.innerHTML = '<i class="fas fa-clock"></i> Submission Successful';
+                    this.style.backgroundColor = '#1a1a1a';
+                    
+                    const message = `Your payment for <strong>${plan}</strong> is being processed manually.<br><br>
+                                     <strong>Transaction ID:</strong> ${transactionId}<br><br>
+                                     Please allow up to <strong>24 hours</strong> for verification. You will be notified once your premium features are active.`;
+                    showCustomModal(message);
+                } else {
+                    alert('Error: ' + data.message);
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }
+        });
+        
+        // Allow pressing Enter to trigger verification
+        document.getElementById('transactionId').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('verifyBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>

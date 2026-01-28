@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner - Sign In</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="back-btn" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        
+        <div class="auth-header">
+            <div class="logo-small">🤝</div>
+            <h1>Partner</h1>
+            <p>Create an account or sign in</p>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="tab-btn active" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+            <button class="tab-btn" id="loginTab" onclick="switchTab('login')">Log In</button>
+        </div>
+        
+        <div class="auth-form" id="signupForm">
+            <form id="signupFormElement" onsubmit="handleSignup(event)">
+                <div id="signupStep1">
+                    <div class="input-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="mobile">Bangladeshi Mobile</label>
+                        <input type="tel" id="mobile" name="mobile" required placeholder="+880 or 01XXXXXXXXX">
+                        <small class="hint">Format: +880XXXXXXXXXX or 01XXXXXXXXX</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="18" max="100" required placeholder="Must be 18+">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Create password">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirm_password" required placeholder="Confirm password">
+                    </div>
+                    
+                    <button type="button" class="btn-primary" onclick="goToStep2()">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <div id="signupStep2" class="hidden">
+                    <div class="profile-upload-section">
+                        <h3>Set Your Profile Picture</h3>
+                        <p>A professional photo helps you get more matches!</p>
+                        <div class="profile-preview-container">
+                            <img id="signupPreview" src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=150" alt="Preview">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('signupPhotoInput').click()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="signupPhotoInput" accept="image/*" class="hidden" onchange="previewSignupPhoto(event)">
+                        <input type="hidden" id="signupPhotoBase64" name="profile_pic">
+                    </div>
+
+                    <button type="submit" class="btn-primary auth-submit-btn">
+                        <span class="btn-text">Create Account</span>
+                        <div class="spinner hidden" id="signupSpinner"></div>
+                    </button>
+                    <button type="button" class="btn-outline" style="margin-top: 10px;" onclick="backToStep1()">Back</button>
+                </div>
+                
+                <div class="form-message" id="signupMessage"></div>
+            </form>
+        </div>
+        
+        <div class="auth-form hidden" id="loginForm">
+            <form id="loginFormElement" onsubmit="login(event)">
+                <div class="input-group">
+                    <label for="loginId">Email or Mobile</label>
+                    <input type="text" id="loginId" name="login_id" required placeholder="Enter email or mobile">
+                </div>
+                
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required placeholder="Enter password">
+                    <div class="forgot-link" onclick="showForgotPopup()">
+                        Forgot password?
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary auth-submit-btn">
+                    <span class="btn-text">Sign In</span>
+                    <div class="spinner hidden" id="loginSpinner"></div>
+                </button>
+                
+                <div class="form-message" id="loginMessage"></div>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p>By continuing, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+        </div>
+    </div>
+    
+    <div class="modal-overlay hidden" id="forgotModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="modal-close" onclick="closeForgotPopup()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your email or mobile number to receive a reset link.</p>
+                <div class="input-group">
+                    <input type="text" id="forgotId" placeholder="Email or mobile number">
+                </div>
+                <button class="btn-primary" onclick="handleForgotPassword()">Send Reset Link</button>
+                <div class="form-message" id="forgotMessage"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Check if user is already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'home.html';
+        }
+
+        function goToStep2() {
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const gender = document.getElementById('gender').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!name || !mobile || !gender || !age || !email || !password || !confirmPassword) {
+                showMessage(document.getElementById('signupMessage'), 'Please fill all fields', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(document.getElementById('signupMessage'), 'Passwords do not match!', 'error');
+                return;
+            }
+
+            if (parseInt(age) < 18) {
+                showMessage(document.getElementById('signupMessage'), 'Must be 18+', 'error');
+                return;
+            }
+
+            document.getElementById('signupStep1').classList.add('hidden');
+            document.getElementById('signupStep2').classList.remove('hidden');
+            document.getElementById('signupMessage').classList.add('hidden');
+        }
+
+        function backToStep1() {
+            document.getElementById('signupStep2').classList.add('hidden');
+            document.getElementById('signupStep1').classList.remove('hidden');
+        }
+
+        function previewSignupPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // Limit size to avoid network/storage issues
+                        const MAX_SIZE = 250; 
+                        if (width > height) {
+                            if (width > MAX_SIZE) {
+                                height *= MAX_SIZE / width;
+                                width = MAX_SIZE;
+                            }
+                        } else {
+                            if (height > MAX_SIZE) {
+                                width *= MAX_SIZE / height;
+                                height = MAX_SIZE;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Much lower quality to ensure small payload
+                        const base64 = canvas.toDataURL('image/jpeg', 0.3); 
+                        document.getElementById('signupPreview').src = base64;
+                        document.getElementById('signupPhotoBase64').value = base64;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const form = event.target;
+            const spinner = document.getElementById('signupSpinner');
+            const message = document.getElementById('signupMessage');
+            
+            // Collect standard form data
+            const formData = new FormData(form);
+            
+            // Check if we have a profile pic to upload
+            const photoInput = document.getElementById('signupPhotoInput');
+            if (photoInput.files.length > 0) {
+                formData.append('profile_pic_file', photoInput.files[0]);
+            }
+            
+            spinner.classList.remove('hidden');
+            message.classList.remove('error', 'success');
+            message.textContent = '';
+            
+            fetch('signup.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server returned ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                spinner.classList.add('hidden');
+                
+                if (data.success) {
+                    const userData = data.user;
+                    // If server returned a profile pic path, use it
+                    if (data.profilePicPath) {
+                        userData.profilePic = data.profilePicPath;
+                    } else {
+                        // Fallback to base64 if needed
+                        const photoBase64 = document.getElementById('signupPhotoBase64').value;
+                        if (photoBase64) userData.profilePic = photoBase64;
+                    }
+
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    showMessage(message, data.message, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'subscription.html';
+                    }, 1500);
+                } else {
+                    showMessage(message, data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Signup Error:', error);
+                spinner.classList.add('hidden');
+                showMessage(message, 'Network error or server too busy. Please try again.', 'error');
+            });
+        }
+
+        function switchTab(tab) {
+            document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+            document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
+            document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+        }
+        
+        function signup(event) {
+            event.preventDefault();
+            const form = event.target;
+            const spinner = document.getElementById('signupSpinner');
+            const message = document.getElementById('signupMessage');
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showMessage(message, 'Passwords do not match!', 'error');
+                return;
+            }
+            
+            const age = parseInt(document.getElementById('age').value);
+            if (age < 18) {
+                showMessage(message, 'You must be 18+ to register', 'error');
+                return;
+            }
+            
+            const formData = new FormData(form);
+            
+            spinner.classList.remove('hidden');
+            message.classList.remove('error', 'success');
+            message.textContent = '';
+            
+            fetch('signup.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                spinner.classList.add('hidden');
+                showMessage(message, data.message, data.success ? 'success' : 'error');
+                
+                if (data.success) {
+                    // Store user info in localStorage for client-side persistence
+                    const userData = data.user;
+                    
+                    // The server now returns the profilePic path in data.user.profilePic
+                    // We just need to make sure we use it
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('registration_time', Date.now().toString());
+                    
+                    setTimeout(() => {
+                        window.location.href = 'subscription.html';
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                spinner.classList.add('hidden');
+                showMessage(message, 'Network error. Please try again.', 'error');
+            });
+        }
+        
+        function login(event) {
+            event.preventDefault();
+            const form = event.target;
+            const spinner = document.getElementById('loginSpinner');
+            const message = document.getElementById('loginMessage');
+            
+            const formData = new FormData(form);
+            
+            spinner.classList.remove('hidden');
+            message.classList.remove('error', 'success');
+            message.textContent = '';
+            
+            fetch('login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                spinner.classList.add('hidden');
+                showMessage(message, data.message, data.success ? 'success' : 'error');
+                
+                if (data.success) {
+                    // Store user info in localStorage for client-side persistence
+                    const userData = data.user;
+                    
+                    // The server now returns the profilePic path in data.user.profilePic
+                    // We just need to make sure we use it
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('registration_time', Date.now().toString());
+                    
+                    setTimeout(() => {
+                        window.location.href = 'subscription.html';
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                spinner.classList.add('hidden');
+                showMessage(message, 'Network error. Please try again.', 'error');
+            });
+        }
+        
+        function showForgotPopup() {
+            document.getElementById('forgotModal').classList.remove('hidden');
+        }
+        
+        function closeForgotPopup() {
+            document.getElementById('forgotModal').classList.add('hidden');
+        }
+        
+        function handleForgotPassword() {
+            const forgotId = document.getElementById('forgotId').value;
+            const message = document.getElementById('forgotMessage');
+            
+            if (!forgotId) {
+                showMessage(message, 'Please enter email or mobile', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('identifier', forgotId);
+            
+            fetch('forgot.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(message, data.message, 'success');
+                if (data.success) {
+                    setTimeout(() => {
+                        closeForgotPopup();
+                    }, 2000);
+                }
+            });
+        }
+        
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = 'form-message ' + type;
+            element.classList.remove('hidden');
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('forgotModal');
+            if (event.target === modal) {
+                closeForgotPopup();
+            }
+        }
+    </script>
+</body>
+</html>

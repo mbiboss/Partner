@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পার্টনার - স্বাগতম</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="welcome-screen">
+    <div class="container">
+        <div class="logo-animation">
+            <div class="logo-icon">🤝</div>
+            <h1 class="app-title">পার্টনার</h1>
+            <p class="tagline">সেরা মানুষের সাথে সংযুক্ত হন</p>
+        </div>
+        
+        <div class="welcome-content">
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>নতুন মানুষের সাথে পরিচিত হন</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>নিরাপদ এবং সুরক্ষিত</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>অর্থপূর্ণ সম্পর্ক</span>
+                </div>
+            </div>
+            
+            <button class="btn-primary continue-btn" onclick="window.location.href='auth.html'">
+                এগিয়ে যান
+            </button>
+            
+            <div class="offline-notice" id="offlineNotice" style="display: none;">
+                <i class="fas fa-wifi-slash"></i>
+                <span>আপনি অফলাইনে আছেন। কিছু ফিচার সীমিত হতে পারে।</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
+        
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        
+        function updateOnlineStatus() {
+            const notice = document.getElementById('offlineNotice');
+            if (notice) {
+                notice.style.display = navigator.onLine ? 'none' : 'flex';
+            }
+        }
+        updateOnlineStatus();
+    </script>
+</body>
+</html>
