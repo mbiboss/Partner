@@ -1,4 +1,7 @@
 <?php
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
@@ -23,12 +26,17 @@ if (!file_exists($usersFile)) {
     exit;
 }
 
-$data = json_decode(file_get_contents($usersFile), true);
+$content = file_get_contents($usersFile);
+$data = json_decode($content, true);
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo json_encode(['success' => false, 'message' => 'Invalid database format']);
+    exit;
+}
 $users = $data['users'] ?? [];
 
 $userFound = false;
 foreach ($users as &$user) {
-    if ($user['id'] === $userId) {
+    if (strval($user['id']) === strval($userId)) {
         if (isset($input['about'])) $user['about'] = $input['about'];
         if (isset($input['education'])) $user['education'] = $input['education'];
         if (isset($input['location'])) $user['location'] = $input['location'];

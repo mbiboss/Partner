@@ -213,6 +213,17 @@
         </div>
     </div>
     <script>
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const initialPhoto = user.profilePic || user.profile_pic;
+            if (initialPhoto) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    const img = document.querySelector('.profile-preview img');
+                    if (img) img.src = initialPhoto;
+                });
+            }
+        })();
+
         async function renderNotifications() {
             const notifList = document.getElementById('notifList');
             const lang = localStorage.getItem('language') || 'bn';
@@ -275,20 +286,11 @@
         }
 
         window.onload = async function() {
-            const isDarkMode = localStorage.getItem('darkMode') === 'true';
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-            }
+            // Theme and Profile Picture are now handled by script.js and immediate scripts
+            renderNotifications();
             
             const lang = localStorage.getItem('language') || 'bn';
             const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            // Set notification badge initial value immediately
-            const count = await getNotificationCount();
-            const badge = document.getElementById('notifBadge');
-            if (badge) badge.textContent = count;
-
-            renderNotifications();
             
             if (lang === 'bn') {
                 document.querySelector('.welcome-text h2').textContent = 'স্বাগতম, ' + (user.name || 'বন্ধু') + '!';
@@ -334,59 +336,84 @@
                 document.getElementById('subBtnText').textContent = 'সাবস্ক্রিপশন কিনুন';
 
                 // Real-time Activity Message
-                const activityTexts = [
-                    'সবেমাত্র ১ জন নতুন মেম্বার জয়েন করেছেন',
-                    'এখনই একজন নতুন প্রোফাইল ভেরিফাইড হয়েছে',
-                    'আজ ১২ জন নতুন ম্যাচ তৈরি হয়েছে'
-                ];
-                const randomActivity = activityTexts[Math.floor(Math.random() * activityTexts.length)];
-                const activityDiv = document.createElement('div');
-                activityDiv.style.cssText = 'background: rgba(212, 175, 55, 0.1); color: var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-size: 0.85rem; border: 1px solid rgba(212, 175, 55, 0.2);';
-                activityDiv.innerHTML = `<i class="fas fa-bolt"></i> ${randomActivity}`;
-                document.querySelector('.stats-bar').insertAdjacentElement('afterend', activityDiv);
-            }
-            
-            if (user.name) {
-                if (user.profilePic) {
-                    document.querySelector('.profile-preview img').src = user.profilePic;
-                } else {
-                    document.querySelector('.profile-preview img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff`;
+                if (!document.querySelector('.activity-msg')) {
+                    const activityTexts = [
+                        'সবেমাত্র ১ জন নতুন মেম্বার জয়েন করেছেন',
+                        'এখনই একজন নতুন প্রোফাইল ভেরিফাইড হয়েছে',
+                        'আজ ১২ জন নতুন ম্যাচ তৈরি হয়েছে'
+                    ];
+                    const randomActivity = activityTexts[Math.floor(Math.random() * activityTexts.length)];
+                    const activityDiv = document.createElement('div');
+                    activityDiv.className = 'activity-msg';
+                    activityDiv.style.cssText = 'background: rgba(212, 175, 55, 0.1); color: var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-size: 0.85rem; border: 1px solid rgba(212, 175, 55, 0.2);';
+                    activityDiv.innerHTML = `<i class="fas fa-bolt"></i> ${randomActivity}`;
+                    document.querySelector('.stats-bar').insertAdjacentElement('afterend', activityDiv);
                 }
             }
-
-            loadProfiles('get_users_by_gender.php?gender=female', 'girlPicks');
-            loadProfiles('get_users_by_gender.php?gender=male', 'boyPicks');
+            
+            await loadProfiles('get_users_by_gender.php?gender=female', 'girlPicks');
+            await loadProfiles('get_users_by_gender.php?gender=male', 'boyPicks');
         };
 
         async function loadProfiles(url, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
             
+            // Clear existing content immediately to show loading state
+            container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><div class="spinner" style="margin: 0 auto;"></div></div>';
+            
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
                 const data = await response.json();
                 console.log('API Response:', data); // Debug log
-                const profiles = data.users || [];
+                let profiles = data.users || [];
+                const lang = localStorage.getItem('language') || 'bn';
                 
+                // Secondary client-side filtering to ensure consistency
+                const gender = containerId === 'girlPicks' ? 'female' : 'male';
+                profiles = profiles.filter(p => {
+                    const g = (p.gender || '').toLowerCase();
+                    if (gender === 'female') return g === 'female' || g === 'girl' || g === 'woman';
+                    if (gender === 'male') return g === 'male' || g === 'boy' || g === 'man';
+                    return false;
+                });
+
                 if (profiles.length === 0) {
-                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">No profiles found.</p>';
+                    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">${lang === 'bn' ? 'কোনো প্রোফাইল পাওয়া যায়নি।' : 'No profiles found.'}</p>`;
                     return;
                 }
                 
-                container.innerHTML = profiles.map(p => `
-                    <div class="profile-card" onclick="location.href='profile-view.html?id=${p.id}'">
-                        <div class="profile-img">
-                            <img src="${p.profile_pic || 'https://ui-avatars.com/api/?name='+encodeURIComponent(p.name)}" alt="${p.name}">
+                const profilesHtml = profiles.map(p => {
+                    const profileImg = p.profile_pic || p.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=6366f1&color=fff`;
+                    const location = p.location || (lang === 'bn' ? 'ঢাকা' : 'Dhaka');
+                    const age = p.age || '';
+                    const education = p.education || '';
+                    const about = p.about || p.bio || (lang === 'bn' ? 'নিজের সম্পর্কে কিছু লিখুন' : 'Write about yourself');
+                    const subscription = (p.subscription || 'free').toUpperCase();
+                    
+                    return `
+                        <div class="profile-card" onclick="location.href='profile-view.html?id=${p.id}'">
+                            <div class="status-badge">${subscription}</div>
+                            <div class="profile-img">
+                                <img src="${profileImg}" alt="${p.name}" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=6366f1&color=fff'">
+                            </div>
+                            <div class="profile-info">
+                                <h4>${p.name}${age ? ', ' + age : ''}</h4>
+                                <p><i class="fas fa-map-marker-alt"></i> ${location}</p>
+                                <div class="bio-text"><i class="fas fa-user"></i> ${about}</div>
+                                ${education ? `<p style="font-size: 11px; margin-top: 2px;"><i class="fas fa-graduation-cap"></i> ${education}</p>` : ''}
+                            </div>
                         </div>
-                        <div class="profile-info">
-                            <h4>${p.name}, ${p.age}</h4>
-                            <p><i class="fas fa-map-marker-alt"></i> ${p.location || 'Dhaka'}</p>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
+                
+                container.innerHTML = profilesHtml;
             } catch (e) {
                 console.error('Error loading profiles:', e);
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">Failed to load profiles.</p>';
+                const lang = localStorage.getItem('language') || 'bn';
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">${lang === 'bn' ? 'প্রোফাইল লোড করতে ব্যর্থ হয়েছে।' : 'Failed to load profiles.'}</p>`;
             }
         }
 

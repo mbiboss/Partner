@@ -245,7 +245,8 @@
             
             fetch('signup.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: { 'Cache-Control': 'no-cache' }
             })
             .then(response => {
                 if (!response.ok) {
@@ -319,7 +320,8 @@
             
             fetch('signup.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: { 'Cache-Control': 'no-cache' }
             })
             .then(response => response.json())
             .then(data => {
@@ -361,7 +363,8 @@
             
             fetch('login.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: { 'Cache-Control': 'no-cache' }
             })
             .then(response => response.json())
             .then(data => {
@@ -411,7 +414,8 @@
             
             fetch('forgot.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: { 'Cache-Control': 'no-cache' }
             })
             .then(response => response.json())
             .then(data => {

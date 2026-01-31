@@ -33,7 +33,7 @@
                     <hr style="margin: 15px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
                     <p><i class="fas fa-graduation-cap"></i> <strong>Education:</strong> <span id="displayEducation">Not specified</span></p>
                     <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> <span id="displayLocation">Bangladesh</span></p>
-                    <p><i class="fas fa-heart"></i> <strong>Status:</strong> Single</p>
+                    <p><i class="fas fa-heart"></i> <strong>Status:</strong> <span id="displayStatus">Single</span></p>
                 </div>
             </div>
 
@@ -95,7 +95,9 @@
             }
 
             try {
-                const response = await fetch(`get_user.php?id=${profileId}`);
+                const response = await fetch(`get_user.php?id=${profileId}`, {
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
                 const data = await response.json();
                 
                 if (data.success) {
@@ -103,14 +105,19 @@
                     currentProfileName = p.name;
                     const displayAge = lang === 'bn' ? p.age.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : p.age;
                     document.getElementById('profileName').textContent = p.name;
-                    document.getElementById('displayTitle').textContent = `${p.name}, ${displayAge}`;
-                    document.getElementById('displayBio').textContent = p.bio || (lang === 'bn' ? 'উল্লেখ নেই' : 'Not specified');
+                    document.getElementById('displayTitle').textContent = `${p.name}${displayAge ? ', ' + displayAge : ''}`;
+                    document.getElementById('displayBio').textContent = p.about || p.bio || (lang === 'bn' ? 'উল্লেখ নেই' : 'Not specified');
                     document.getElementById('displayEducation').textContent = p.education || (lang === 'bn' ? 'উল্লেখ নেই' : 'Not specified');
-                    document.getElementById('profileImg').src = p.profile_pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}`;
+                    document.getElementById('profileImg').src = p.profile_pic || p.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}`;
                     
                     if (p.location) {
                         const locSpan = document.getElementById('displayLocation');
                         if (locSpan) locSpan.textContent = p.location;
+                    }
+                    
+                    const statusSpan = document.getElementById('displayStatus');
+                    if (statusSpan) {
+                        statusSpan.textContent = p.status || (lang === 'bn' ? 'অবিবাহিত' : 'Single');
                     }
 
                     // Check if already liked

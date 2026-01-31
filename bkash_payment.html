@@ -361,7 +361,7 @@
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <p>Enter the recipient number:</p>
-                        <div class="phone-number">01342130668</div>
+                        <div class="phone-number">01317460865</div>
                         <button class="copy-btn" id="copyBtn">
                             <i class="far fa-copy"></i> Copy Number
                         </button>
@@ -430,7 +430,7 @@
 
         // Copy phone number functionality
         document.getElementById('copyBtn').addEventListener('click', function() {
-            const phoneNumber = '01342130668';
+            const phoneNumber = '01317460865';
             navigator.clipboard.writeText(phoneNumber).then(() => {
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="fas fa-check"></i> Copied!';
@@ -471,7 +471,11 @@
                 formData.append('amount', price);
                 formData.append('trx_id', transactionId);
 
-                const res = await fetch('admin_api.php', { method: 'POST', body: formData });
+                const res = await fetch('admin_api.php', { 
+                    method: 'POST', 
+                    body: formData,
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
                 const data = await res.json();
                 
                 if (data.success) {

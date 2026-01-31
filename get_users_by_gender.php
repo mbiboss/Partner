@@ -1,4 +1,7 @@
 <?php
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
 header('Content-Type: application/json');
 
 $gender = $_GET['gender'] ?? '';
@@ -13,6 +16,7 @@ if (file_exists($usersFile)) {
     $data = json_decode(file_get_contents($usersFile), true);
     $registeredUsers = $data['users'] ?? [];
     foreach ($registeredUsers as $user) {
+        $user['profile_pic'] = $user['profile_pic'] ?? '';
         $allUsers[] = $user;
     }
 }
@@ -56,5 +60,10 @@ $filtered = array_filter($allUsers, function($u) use ($gender) {
 });
 
 // Reset keys for JSON array
-echo json_encode(['success' => true, 'users' => array_values($filtered)]);
+$finalUsers = array_map(function($u) {
+    if (isset($u['password'])) unset($u['password']);
+    return $u;
+}, array_values($filtered));
+
+echo json_encode(['success' => true, 'users' => $finalUsers]);
 ?>

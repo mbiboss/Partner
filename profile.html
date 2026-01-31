@@ -14,7 +14,7 @@
                 <button class="icon-btn" onclick="window.history.back()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <h1>Profile</h1>
+                <h1 id="profileHeaderTitle">Profile</h1>
             </div>
             <div class="header-right">
                 <button class="icon-btn" onclick="logout()">
@@ -27,8 +27,8 @@
             <div class="profile-header">
                 <div class="profile-photo-container">
                     <div class="profile-photo" id="profilePhoto">
-                        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=150" 
-                             alt="Profile" id="profileImage">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                             alt="Profile" id="profileImage" style="background: #eee;">
                         <button class="photo-edit-btn" onclick="document.getElementById('photoInput').click()">
                             <i class="fas fa-camera"></i>
                         </button>
@@ -38,6 +38,7 @@
                 </div>
                 
                 <h2 id="userName">Loading...</h2>
+                <div id="userBadge" class="user-badge hidden"></div>
                 <p id="userEmail">Loading...</p>
                 
                 <div class="profile-stats">
@@ -57,125 +58,111 @@
             </div>
             
             <div class="section">
-                <h3 class="section-title">Account</h3>
-                <div class="settings-list">
+                <div class="section-header">
+                    <h3 class="section-title" id="profileDetailsTitle">প্রোফাইল বিবরণ</h3>
+                    <button class="btn-text" onclick="toggleEditMode()" id="editModeBtn">
+                        <i class="fas fa-edit"></i> এডিট করুন
+                    </button>
+                </div>
+                <div class="settings-list" id="profileDisplayList">
                     <div class="setting-item">
                         <div class="setting-info">
-                            <i class="fas fa-mobile-alt"></i>
+                            <i class="fas fa-user-circle"></i>
                             <div>
-                                <strong>Mobile Number</strong>
-                                <p id="userMobile">Loading...</p>
+                                <strong id="aboutLabel">About Me</strong>
+                                <p id="userAbout" style="white-space: pre-wrap;">Loading...</p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="setting-item">
                         <div class="setting-info">
-                            <i class="fas fa-venus-mars"></i>
+                            <i class="fas fa-graduation-cap"></i>
                             <div>
-                                <strong>Gender</strong>
-                                <p id="userGender">Loading...</p>
+                                <strong id="educationLabel">Education</strong>
+                                <p id="userEducation">Loading...</p>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong id="locationLabel">Location</strong>
+                                <p id="userLocation">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-heart"></i>
+                            <div>
+                                <strong id="statusLabel">Status</strong>
+                                <p id="userStatus">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <i class="fas fa-birthday-cake"></i>
-                            <div>
-                                <strong>Age</strong>
-                                <p id="userAge">Loading...</p>
-                            </div>
-                        </div>
+                <div class="edit-form hidden" id="profileEditForm">
+                    <div class="input-group">
+                        <label id="editAboutLabel">আমার সম্পর্কে</label>
+                        <textarea id="editAboutInput" placeholder="নিজের সম্পর্কে লিখুন..."></textarea>
                     </div>
-                    
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <i class="fas fa-crown"></i>
-                            <div>
-                                <strong>Subscription</strong>
-                                <p id="subscriptionStatus">Free Plan</p>
-                            </div>
-                        </div>
-                        <button class="btn-small" onclick="goToSubscription()">
-                            Upgrade
+                    <div class="input-group">
+                        <label id="editEducationLabel">শিক্ষাগত যোগ্যতা</label>
+                        <input type="text" id="editEducationInput" placeholder="শিক্ষাগত যোগ্যতা যোগ করুন">
+                    </div>
+                    <div class="input-group">
+                        <label id="editLocationLabel">ঠিকানা</label>
+                        <input type="text" id="editLocationInput" placeholder="আপনার ঠিকানা যোগ করুন">
+                    </div>
+                    <div class="input-group">
+                        <label id="editStatusLabel">সম্পর্কের অবস্থা</label>
+                        <select id="editStatusInput">
+                            <option value="অবিবাহিত">অবিবাহিত</option>
+                            <option value="সম্পর্কে আছি">সম্পর্কে আছি</option>
+                            <option value="এনগেজড">এনগেজড</option>
+                            <option value="বিবাহিত">বিবাহিত</option>
+                            <option value="পার্টনার খুঁজছি">পার্টনার খুঁজছি</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" onclick="saveAllProfileFields()">
+                            <i class="fas fa-save"></i> সেভ করুন
+                        </button>
+                        <button class="btn-outline" onclick="toggleEditMode()">
+                            বাতিল করুন
                         </button>
                     </div>
                 </div>
             </div>
 
             <div class="section">
-                <h3 class="section-title" id="profileDetailsTitle">প্রোফাইল বিবরণ</h3>
-                <div class="settings-list">
-                    <div class="setting-item clickable" onclick="openEditModal('about')">
-                        <div class="setting-info">
-                            <i class="fas fa-user-circle"></i>
-                            <div>
-                                <strong id="aboutLabel">আমার সম্পর্কে</strong>
-                                <p id="userAbout">নিজের সম্পর্কে লিখুন</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    
-                    <div class="setting-item clickable" onclick="openEditModal('education')">
-                        <div class="setting-info">
-                            <i class="fas fa-graduation-cap"></i>
-                            <div>
-                                <strong id="educationLabel">শিক্ষাগত যোগ্যতা</strong>
-                                <p id="userEducation">শিক্ষাগত যোগ্যতা যোগ করুন</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    
-                    <div class="setting-item clickable" onclick="openEditModal('location')">
-                        <div class="setting-info">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <strong id="locationLabel">ঠিকানা</strong>
-                                <p id="userLocation">আপনার ঠিকানা যোগ করুন</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    
-                    <div class="setting-item clickable" onclick="openEditModal('status')">
-                        <div class="setting-info">
-                            <i class="fas fa-heart"></i>
-                            <div>
-                                <strong id="statusLabel">সম্পর্কের অবস্থা</strong>
-                                <p id="userStatus">আপনার অবস্থা যোগ করুন</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h3 class="section-title">Preferences</h3>
+                <h3 class="section-title" id="preferencesTitle">পছন্দসমূহ</h3>
                 <div class="settings-list">
                     <div class="setting-item">
                         <div class="setting-info">
                             <i class="fas fa-globe"></i>
                             <div>
-                                <strong>Language</strong>
-                                <p>Select your language</p>
+                                <strong id="langLabel">ভাষা</strong>
+                                <p id="langDesc">ভাষা নির্বাচন করুন</p>
                             </div>
                         </div>
                         <select class="select-small" id="languageSelect" onchange="changeLanguage()">
                             <option value="en">English</option>
-                            <option value="bn">বাংলা</option>
+                            <option value="bn" selected>বাংলা</option>
                         </select>
                     </div>
                     
-                    <div class="setting-item">
+                    <div class="setting-item" style="display: none;">
                         <div class="setting-info">
                             <i class="fas fa-palette"></i>
                             <div>
-                                <strong>Theme</strong>
-                                <p>Light or Dark mode</p>
+                                <strong id="themeLabel">থিম</strong>
+                                <p id="themeDesc">লাইট বা ডার্ক মোড</p>
                             </div>
                         </div>
                         <label class="switch">
@@ -188,8 +175,8 @@
                         <div class="setting-info">
                             <i class="fas fa-bell"></i>
                             <div>
-                                <strong>Notifications</strong>
-                                <p>Manage notifications</p>
+                                <strong id="notifyLabel">নোটিফিকেশন</strong>
+                                <p id="notifyDesc">নোটিফিকেশন ম্যানেজ করুন</p>
                             </div>
                         </div>
                         <label class="switch">
@@ -201,14 +188,14 @@
             </div>
             
             <div class="section">
-                <h3 class="section-title">Support</h3>
+                <h3 class="section-title" id="supportTitle">সাপোর্ট</h3>
                 <div class="settings-list">
                     <div class="setting-item clickable" onclick="showHelp()">
                         <div class="setting-info">
                             <i class="fas fa-question-circle"></i>
                             <div>
-                                <strong>Help & Support</strong>
-                                <p>Get help with the app</p>
+                                <strong id="helpLabel">সাহায্য ও সাপোর্ট</strong>
+                                <p id="helpDesc">অ্যাপ নিয়ে সাহায্য নিন</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right"></i>
@@ -218,8 +205,8 @@
                         <div class="setting-info">
                             <i class="fas fa-shield-alt"></i>
                             <div>
-                                <strong>Privacy & Safety</strong>
-                                <p>Your data and security</p>
+                                <strong id="privacyLabel">প্রাইভেসি ও নিরাপত্তা</strong>
+                                <p id="privacyDesc">আপনার তথ্য ও সুরক্ষা</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right"></i>
@@ -229,8 +216,8 @@
                         <div class="setting-info">
                             <i class="fas fa-info-circle"></i>
                             <div>
-                                <strong>About Partner</strong>
-                                <p>Version 1.0.0</p>
+                                <strong id="aboutLinkLabel">পার্টনার সম্পর্কে</strong>
+                                <p id="aboutVersionLabel">ভার্সন ১.২.০</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right"></i>
@@ -382,6 +369,23 @@
     
     <script src="script.js"></script>
     <script>
+        // Immediate theme application to prevent flicker
+        (function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+            }
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const initialPhoto = user.profilePic || user.profile_pic;
+            if (initialPhoto) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    const img = document.getElementById('profileImage');
+                    if (img) img.src = initialPhoto;
+                });
+            }
+        })();
+
         let currentEditField = '';
         
         function openEditModal(field) {
@@ -531,11 +535,7 @@
             if (modal) {
                 modal.classList.add('hidden');
                 modal.style.setProperty('display', 'none', 'important');
-                
-                const elements = document.querySelectorAll('.app-main, .app-header, .bottom-nav');
-                elements.forEach(el => {
-                    if (el) el.style.filter = 'none';
-                });
+                removeBlur();
             }
         }
         function showHelp() {
@@ -646,7 +646,9 @@
 
             if (user.id) {
                 try {
-                    const response = await fetch(`get_user.php?id=${user.id}`);
+                    const response = await fetch(`get_user.php?id=${user.id}`, {
+                        headers: { 'Cache-Control': 'no-cache' }
+                    });
                     const remoteData = await response.json();
                     if (remoteData.success) {
                         localStorage.setItem('user', JSON.stringify(remoteData.user));
@@ -933,16 +935,22 @@
         function showPrivacy() {
             document.getElementById('privacyModal').classList.remove('hidden');
             document.getElementById('privacyModal').style.display = 'flex';
+            applyBlur();
         }
 
         function showAbout() {
             document.getElementById('aboutModal').classList.remove('hidden');
             document.getElementById('aboutModal').style.display = 'flex';
+            applyBlur();
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+                removeBlur();
+            }
         }
 
         function closeChat() {
